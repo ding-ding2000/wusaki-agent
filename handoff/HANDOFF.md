@@ -62,3 +62,21 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: F007 continue by adding a `round-commit` command to attach commit hash to the just-finished round and reject empty hashes.
+
+## R005 - F007
+
+- Date: 2026-05-15
+- Task: add guarded command to attach commit hash to completed rounds
+- Changes:
+  - added `round-commit` command in [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py)
+  - command behavior:
+    - requires `--round-id` and non-empty `--commit`
+    - refuses unknown round ids
+    - refuses rounds that are not `done`
+    - writes commit hash to `progress_journal.json` for the target round
+  - updated F007 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: F007 continue with `round-finish --commit` integration so finish and commit linkage can be completed in one guarded operation.

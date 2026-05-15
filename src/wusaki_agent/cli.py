@@ -141,6 +141,35 @@ def round_finish(
     console.print(f"Finished round: {active_round}")
 
 
+@app.command("round-commit")
+def round_commit(
+    round_id: str = typer.Option(..., "--round-id", help="Round id, e.g. R004."),
+    commit: str = typer.Option(..., "--commit", help="Commit hash, e.g. 3169b45."),
+) -> None:
+    project = project_root()
+    progress_path = project / "progress_journal.json"
+    progress_state = read_json(progress_path)
+
+    commit_hash = commit.strip()
+    if not commit_hash:
+        raise typer.BadParameter("Commit hash must not be empty.")
+
+    rounds = progress_state.get("rounds", [])
+    target = None
+    for item in rounds:
+        if item.get("round_id") == round_id:
+            target = item
+            break
+    if target is None:
+        raise typer.BadParameter(f"Round id not found: {round_id}")
+    if target.get("status") != "done":
+        raise typer.BadParameter(f"Round must be done before writing commit: {round_id}")
+
+    target["commit"] = commit_hash
+    write_json(progress_path, progress_state)
+    console.print(f"Attached commit for round: {round_id}")
+
+
 @app.command("init-workspace")
 def init_workspace_cmd(
     workspace: Path = typer.Option(DEFAULT_WORKSPACE, help="Workspace directory."),  # noqa: B008
