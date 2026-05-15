@@ -218,7 +218,8 @@
         "CLI now exposes explicit round status from feature/progress/handoff state.",
         "Added `wusaki-agent round-start` to activate exactly one in-progress relay round.",
         "Added `wusaki-agent round-finish` to close active rounds with required verification evidence.",
-        "Added `wusaki-agent round-commit` to attach commit hashes to completed rounds."
+        "Added `wusaki-agent round-commit` to attach commit hashes to completed rounds.",
+        "Extended `wusaki-agent round-finish` to optionally attach commit hash in the same guarded operation."
       ]
     },
     {

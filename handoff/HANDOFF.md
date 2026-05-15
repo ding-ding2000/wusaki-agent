@@ -80,3 +80,18 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: F007 continue with `round-finish --commit` integration so finish and commit linkage can be completed in one guarded operation.
+
+## R006 - F007
+
+- Date: 2026-05-15
+- Task: support commit attachment directly in round finish
+- Changes:
+  - updated `round-finish` in [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py)
+  - added optional `--commit` to finish command
+  - command now validates non-empty commit hash when provided and writes it to the target round
+  - updated F007 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: F007 continue by adding contract tests for round-start/round-finish/round-commit CLI behaviors.

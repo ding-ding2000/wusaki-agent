@@ -113,6 +113,11 @@ def round_finish(
         "--completed-on",
         help="Completion date, e.g. 2026-05-15.",
     ),
+    commit: str | None = typer.Option(
+        None,
+        "--commit",
+        help="Optional commit hash to attach while finishing the round.",
+    ),
 ) -> None:
     project = project_root()
     progress_path = project / "progress_journal.json"
@@ -136,6 +141,11 @@ def round_finish(
     target["status"] = "done"
     target["verification"] = verification
     target["completed_on"] = completed_on
+    if commit is not None:
+        commit_hash = commit.strip()
+        if not commit_hash:
+            raise typer.BadParameter("Commit hash must not be empty when provided.")
+        target["commit"] = commit_hash
     progress_state["active_round"] = None
     write_json(progress_path, progress_state)
     console.print(f"Finished round: {active_round}")
