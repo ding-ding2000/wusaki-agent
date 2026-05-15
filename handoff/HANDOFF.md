@@ -260,3 +260,23 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: run acceptance-focused verification commands for F002 and close F002 if all criteria are satisfied.
+
+## R016 - F002
+
+- Date: 2026-05-15
+- Task: acceptance verification and closure of passive reply mainline feature
+- Changes:
+  - executed acceptance-oriented passive command:
+    - `wusaki-agent passive-turn --channel cli --user demo --message 'F002验收消息'`
+  - verified persistence artifacts:
+    - `state/turns.log`
+    - `state/turn_artifacts/turn_*.json`
+    - `state/postprocess_queue.jsonl`
+  - updated [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json) to set `F002.status = done`
+  - appended final F002 acceptance progress note in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent passive-turn --channel cli --user demo --message 'F002验收消息'`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: start F003 (`Markdown 记忆与 consolidation 基础设施`) by implementing first idempotent pending/history write primitive.
