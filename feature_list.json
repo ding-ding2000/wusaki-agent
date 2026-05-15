@@ -195,7 +195,7 @@
       "title": "统一配置、日志与调试 CLI",
       "milestone": "M4",
       "priority": "P0",
-      "status": "in_progress",
+      "status": "done",
       "summary": "建立 Settings、路径约定、日志输出、状态查看和手动触发命令集合。",
       "deliverables": [
         "src/wusaki_agent/config.py",
@@ -220,7 +220,8 @@
         "Added `wusaki-agent round-finish` to close active rounds with required verification evidence.",
         "Added `wusaki-agent round-commit` to attach commit hashes to completed rounds.",
         "Extended `wusaki-agent round-finish` to optionally attach commit hash in the same guarded operation.",
-        "Added CLI contract tests for round-start/round-finish/round-commit workflow constraints."
+        "Added CLI contract tests for round-start/round-finish/round-commit workflow constraints.",
+        "Validated F007 acceptance commands: `wusaki-agent --help`, `wusaki-agent status`, and `wusaki-agent show-features`."
       ]
     },
     {

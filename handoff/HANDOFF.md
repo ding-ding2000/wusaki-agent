@@ -113,3 +113,19 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: evaluate F007 acceptance completion and, if satisfied, close F007 as `done` with final verification note.
+
+## R008 - F007
+
+- Date: 2026-05-15
+- Task: close F007 after full acceptance verification
+- Changes:
+  - updated [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json) to set `F007.status = done`
+  - appended final acceptance verification note in F007 progress notes
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent --help`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent status`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent show-features`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: start F002 (`被动回复主链路`) via relay round process.
