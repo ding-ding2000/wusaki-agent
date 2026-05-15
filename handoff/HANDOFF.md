@@ -185,3 +185,20 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: continue F002 by adding explicit passive-turn output envelope model and writing a normalized turn artifact schema for downstream consolidation contracts.
+
+## R012 - F002
+
+- Date: 2026-05-15
+- Task: normalize passive-turn output with explicit envelope model
+- Changes:
+  - added `PassiveTurnOutput` in [models.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/runtime/models.py)
+  - updated [passive.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/agent/passive.py) to return `PassiveTurnOutput`
+  - passive log persistence now serializes through `PassiveTurnOutput.to_dict()`
+  - updated [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py) to read structured output fields
+  - updated [test_passive_turn_cli.py](/home/dingding/python/wusaki-agent/tests/test_passive_turn_cli.py) for model-based assertions
+  - updated F002 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: continue F002 by adding passive-turn context bundle fields (memory placeholders + recent turn hints) into the normalized artifact schema.

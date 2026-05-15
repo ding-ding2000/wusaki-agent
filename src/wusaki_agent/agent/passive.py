@@ -7,7 +7,7 @@ from wusaki_agent.channels.base import ChannelMessage
 from wusaki_agent.channels.qq import QqChannelAdapter
 from wusaki_agent.channels.telegram import TelegramChannelAdapter
 from wusaki_agent.json_io import write_json
-from wusaki_agent.runtime.models import TurnEnvelope
+from wusaki_agent.runtime.models import PassiveTurnOutput, TurnEnvelope
 
 
 def describe_passive_turn_contract(turn: TurnEnvelope) -> str:
@@ -17,22 +17,20 @@ def describe_passive_turn_contract(turn: TurnEnvelope) -> str:
     )
 
 
-def run_passive_turn(turn: TurnEnvelope, workspace: Path) -> dict:
+def run_passive_turn(turn: TurnEnvelope, workspace: Path) -> PassiveTurnOutput:
     """Run one deterministic passive turn and persist minimal turn logs."""
     recent_context = load_recent_context(workspace)
     response_text = dispatch_response(turn)
-    record = {
-        "channel": turn.channel,
-        "user_id": turn.user_id,
-        "message": turn.message,
-        "created_at": turn.created_at.isoformat(),
-        "context_used": {
-            "recent_context_preview": recent_context[:200],
-        },
-        "response": response_text,
-    }
-    append_turn_log(workspace, record, recent_context=recent_context)
-    return record
+    output = PassiveTurnOutput(
+        channel=turn.channel,
+        user_id=turn.user_id,
+        message=turn.message,
+        created_at=turn.created_at.isoformat(),
+        context_used={"recent_context_preview": recent_context[:200]},
+        response=response_text,
+    )
+    append_turn_log(workspace, output, recent_context=recent_context)
+    return output
 
 
 def load_recent_context(workspace: Path) -> str:
@@ -42,10 +40,11 @@ def load_recent_context(workspace: Path) -> str:
     return path.read_text(encoding="utf-8").strip()
 
 
-def append_turn_log(workspace: Path, record: dict, recent_context: str) -> None:
+def append_turn_log(workspace: Path, output: PassiveTurnOutput, recent_context: str) -> None:
     state_dir = workspace / "state"
     state_dir.mkdir(parents=True, exist_ok=True)
     log_path = state_dir / "turns.log"
+    record = output.to_dict()
     with log_path.open("a", encoding="utf-8") as fp:
         fp.write(json.dumps(record, ensure_ascii=False) + "\n")
 

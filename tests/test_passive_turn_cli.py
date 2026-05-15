@@ -26,7 +26,7 @@ def test_run_passive_turn_persists_logs(tmp_path: Path) -> None:
 
     result = run_passive_turn(turn, workspace)
 
-    assert result["response"] == "[cli-placeholder] demo: 收到消息：你好"
+    assert result.response == "[cli-placeholder] demo: 收到消息：你好"
 
     latest_path = workspace / "state" / "latest_turn.json"
     assert latest_path.exists()

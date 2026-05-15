@@ -270,7 +270,7 @@ def passive_turn(
         created_at=datetime.utcnow(),
     )
     result = run_passive_turn(turn, workspace)
-    console.print(f"Response: {result['response']}")
+    console.print(f"Response: {result.response}")
     console.print(f"Turn log: {workspace / 'state' / 'turns.log'}")
 
 
