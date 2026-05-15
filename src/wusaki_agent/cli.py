@@ -13,6 +13,7 @@ from wusaki_agent.config import Settings, ensure_default_settings
 from wusaki_agent.drift.skills import discover_skills
 from wusaki_agent.feature_registry import FeatureRegistry
 from wusaki_agent.json_io import read_json, write_json
+from wusaki_agent.memory.markdown import run_consolidation
 from wusaki_agent.observability.logging import configure_logging
 from wusaki_agent.paths import default_workspace_path, feature_list_path, project_root
 from wusaki_agent.proactive.tick import dry_run_tick
@@ -276,6 +277,19 @@ def passive_turn(
         console.print("Mode: dry-run (no files written)")
     else:
         console.print(f"Turn log: {workspace / 'state' / 'turns.log'}")
+
+
+@app.command("memory-consolidate")
+def memory_consolidate(
+    workspace: Path = typer.Option(DEFAULT_WORKSPACE, help="Workspace directory."),  # noqa: B008
+    limit: int | None = typer.Option(None, help="Max pending queue items to process."),
+) -> None:
+    result = run_consolidation(workspace, limit=limit)
+    console.print(f"Processed: {result.processed}")
+    console.print(f"Skipped: {result.skipped}")
+    console.print(f"History appended: {result.history_appended}")
+    console.print(f"Pending appended: {result.pending_appended}")
+    console.print(f"Recent context updated: {result.recent_context_updated}")
 
 
 @app.callback()

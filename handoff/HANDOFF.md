@@ -280,3 +280,24 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: start F003 (`Markdown 记忆与 consolidation 基础设施`) by implementing first idempotent pending/history write primitive.
+
+## R017 - F003
+
+- Date: 2026-05-15
+- Task: implement first idempotent markdown consolidation primitive
+- Changes:
+  - expanded [markdown.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/memory/markdown.py):
+    - `run_consolidation()`
+    - queue/index loading and saving helpers
+    - idempotent markdown append primitives
+    - recent context update logic
+  - added `memory-consolidate` command in [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py)
+  - added [test_memory_consolidation.py](/home/dingding/python/wusaki-agent/tests/test_memory_consolidation.py):
+    - verifies writes to `HISTORY.md` / `PENDING.md` / `RECENT_CONTEXT.md`
+    - verifies idempotent behavior on repeated consolidation
+  - updated F003 status to `in_progress` and added progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: run acceptance-focused F003 verification (`memory-consolidate` end-to-end) and close F003 if criteria are met.
