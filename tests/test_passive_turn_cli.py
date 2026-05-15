@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from wusaki_agent.agent.passive import run_passive_turn
+from wusaki_agent.agent.passive import dispatch_response, run_passive_turn
 from wusaki_agent.runtime.models import TurnEnvelope
 
 
@@ -26,7 +26,7 @@ def test_run_passive_turn_persists_logs(tmp_path: Path) -> None:
 
     result = run_passive_turn(turn, workspace)
 
-    assert result["response"] == "收到消息：你好"
+    assert result["response"] == "[cli-placeholder] demo: 收到消息：你好"
 
     latest_path = workspace / "state" / "latest_turn.json"
     assert latest_path.exists()
@@ -49,3 +49,32 @@ def test_run_passive_turn_persists_logs(tmp_path: Path) -> None:
     artifact = json.loads(artifacts[0].read_text(encoding="utf-8"))
     assert artifact["turn"]["message"] == "你好"
     assert "用户正在调试被动回合" in artifact["context"]["recent_context"]
+
+
+def test_dispatch_response_uses_channel_adapters() -> None:
+    base_turn = TurnEnvelope(
+        channel="qq",
+        user_id="u1",
+        message="hello",
+        created_at=datetime(2026, 5, 15, 12, 0, 0),
+    )
+    qq_text = dispatch_response(base_turn)
+    assert qq_text == "[qq-placeholder] u1: hello"
+
+    tg_turn = TurnEnvelope(
+        channel="telegram",
+        user_id="u2",
+        message="world",
+        created_at=datetime(2026, 5, 15, 12, 0, 0),
+    )
+    tg_text = dispatch_response(tg_turn)
+    assert tg_text == "[telegram-placeholder] u2: world"
+
+    cli_turn = TurnEnvelope(
+        channel="cli",
+        user_id="u3",
+        message="ping",
+        created_at=datetime(2026, 5, 15, 12, 0, 0),
+    )
+    cli_text = dispatch_response(cli_turn)
+    assert cli_text == "[cli-placeholder] u3: 收到消息：ping"

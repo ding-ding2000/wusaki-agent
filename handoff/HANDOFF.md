@@ -166,3 +166,22 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: continue F002 by adding channel adapter integration in passive-turn (`cli`/`qq`/`telegram` dispatch abstraction) while keeping deterministic fallback.
+
+## R011 - F002
+
+- Date: 2026-05-15
+- Task: integrate channel adapter dispatch into passive turn path
+- Changes:
+  - updated [passive.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/agent/passive.py)
+  - added `dispatch_response()` with adapter routing:
+    - `qq` -> `QqChannelAdapter`
+    - `telegram` -> `TelegramChannelAdapter`
+    - fallback -> deterministic `[cli-placeholder]`
+  - extended [test_passive_turn_cli.py](/home/dingding/python/wusaki-agent/tests/test_passive_turn_cli.py) with adapter-dispatch assertions
+  - updated existing passive-turn response expectation to match fallback format
+  - updated F002 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: continue F002 by adding explicit passive-turn output envelope model and writing a normalized turn artifact schema for downstream consolidation contracts.

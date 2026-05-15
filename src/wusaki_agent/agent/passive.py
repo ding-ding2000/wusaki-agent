@@ -3,6 +3,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from wusaki_agent.channels.base import ChannelMessage
+from wusaki_agent.channels.qq import QqChannelAdapter
+from wusaki_agent.channels.telegram import TelegramChannelAdapter
 from wusaki_agent.json_io import write_json
 from wusaki_agent.runtime.models import TurnEnvelope
 
@@ -17,7 +20,7 @@ def describe_passive_turn_contract(turn: TurnEnvelope) -> str:
 def run_passive_turn(turn: TurnEnvelope, workspace: Path) -> dict:
     """Run one deterministic passive turn and persist minimal turn logs."""
     recent_context = load_recent_context(workspace)
-    response_text = f"收到消息：{turn.message}"
+    response_text = dispatch_response(turn)
     record = {
         "channel": turn.channel,
         "user_id": turn.user_id,
@@ -63,3 +66,15 @@ def append_turn_log(workspace: Path, record: dict, recent_context: str) -> None:
     artifact_name = f"turn_{record['created_at'].replace(':', '-').replace('.', '-')}.json"
     artifact_path = state_dir / "turn_artifacts" / artifact_name
     write_json(artifact_path, artifact)
+
+
+def dispatch_response(turn: TurnEnvelope) -> str:
+    adapters = {
+        "qq": QqChannelAdapter(),
+        "telegram": TelegramChannelAdapter(),
+    }
+    message = ChannelMessage(channel=turn.channel, user_id=turn.user_id, text=turn.message)
+    adapter = adapters.get(turn.channel)
+    if adapter is None:
+        return f"[cli-placeholder] {turn.user_id}: 收到消息：{turn.message}"
+    return adapter.send(message)
