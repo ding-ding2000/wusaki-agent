@@ -95,3 +95,21 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: F007 continue by adding contract tests for round-start/round-finish/round-commit CLI behaviors.
+
+## R007 - F007
+
+- Date: 2026-05-15
+- Task: add deterministic contract tests for relay-round CLI commands
+- Changes:
+  - added [test_round_workflow_cli.py](/home/dingding/python/wusaki-agent/tests/test_round_workflow_cli.py)
+  - coverage includes:
+    - successful start -> finish(with commit) -> commit update flow
+    - duplicate `round_id` rejection
+    - finish without active round rejection
+    - commit on non-done round rejection
+  - updated F007 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: evaluate F007 acceptance completion and, if satisfied, close F007 as `done` with final verification note.
