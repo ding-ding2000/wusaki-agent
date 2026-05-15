@@ -202,3 +202,24 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: continue F002 by adding passive-turn context bundle fields (memory placeholders + recent turn hints) into the normalized artifact schema.
+
+## R013 - F002
+
+- Date: 2026-05-15
+- Task: add passive-turn context bundle fields for downstream consolidation contracts
+- Changes:
+  - updated [passive.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/agent/passive.py)
+  - `artifact.context` is now a bundle containing:
+    - `recent_context`
+    - `memory_placeholders`
+    - `recent_turn_hints`
+  - added helper functions:
+    - `extract_memory_placeholders()`
+    - `build_recent_turn_hints()`
+  - updated [test_passive_turn_cli.py](/home/dingding/python/wusaki-agent/tests/test_passive_turn_cli.py) to validate the new context bundle schema
+  - updated F002 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: continue F002 by adding a deterministic `passive-turn --dry-run` option that validates pipeline shape without writing files.

@@ -49,6 +49,9 @@ def test_run_passive_turn_persists_logs(tmp_path: Path) -> None:
     artifact = json.loads(artifacts[0].read_text(encoding="utf-8"))
     assert artifact["turn"]["message"] == "你好"
     assert "用户正在调试被动回合" in artifact["context"]["recent_context"]
+    assert "用户正在调试被动回合" in artifact["context"]["memory_placeholders"][0]
+    assert artifact["context"]["recent_turn_hints"][0] == "user:你好"
+    assert artifact["context"]["recent_turn_hints"][1].startswith("assistant:")
 
 
 def test_dispatch_response_uses_channel_adapters() -> None:

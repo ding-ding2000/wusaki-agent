@@ -52,6 +52,11 @@ def append_turn_log(workspace: Path, output: PassiveTurnOutput, recent_context: 
     write_json(latest_path, record)
 
     # Structured artifact for downstream consolidation and audits.
+    context_bundle = {
+        "recent_context": recent_context,
+        "memory_placeholders": extract_memory_placeholders(recent_context),
+        "recent_turn_hints": build_recent_turn_hints(record),
+    }
     artifact = {
         "turn": {
             "channel": record["channel"],
@@ -59,7 +64,7 @@ def append_turn_log(workspace: Path, output: PassiveTurnOutput, recent_context: 
             "message": record["message"],
             "created_at": record["created_at"],
         },
-        "context": {"recent_context": recent_context},
+        "context": context_bundle,
         "response": {"text": record["response"]},
     }
     artifact_name = f"turn_{record['created_at'].replace(':', '-').replace('.', '-')}.json"
@@ -77,3 +82,18 @@ def dispatch_response(turn: TurnEnvelope) -> str:
     if adapter is None:
         return f"[cli-placeholder] {turn.user_id}: 收到消息：{turn.message}"
     return adapter.send(message)
+
+
+def extract_memory_placeholders(recent_context: str) -> list[str]:
+    placeholders: list[str] = []
+    for line in recent_context.splitlines():
+        text = line.strip()
+        if not text:
+            continue
+        if text.startswith("- "):
+            placeholders.append(text[2:].strip())
+    return placeholders[:5]
+
+
+def build_recent_turn_hints(record: dict) -> list[str]:
+    return [f"user:{record['message']}", f"assistant:{record['response']}"]
