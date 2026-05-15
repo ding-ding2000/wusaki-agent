@@ -25,17 +25,26 @@ def run_passive_turn(
 ) -> PassiveTurnOutput:
     """Run one deterministic passive turn and persist minimal turn logs."""
     recent_context = load_recent_context(workspace)
+    long_term_memory = load_long_term_memory(workspace)
     response_text = dispatch_response(turn)
     output = PassiveTurnOutput(
         channel=turn.channel,
         user_id=turn.user_id,
         message=turn.message,
         created_at=turn.created_at.isoformat(),
-        context_used={"recent_context_preview": recent_context[:200]},
+        context_used={
+            "recent_context_preview": recent_context[:200],
+            "long_term_memory_preview": long_term_memory[:200],
+        },
         response=response_text,
     )
     if persist:
-        append_turn_log(workspace, output, recent_context=recent_context)
+        append_turn_log(
+            workspace,
+            output,
+            recent_context=recent_context,
+            long_term_memory=long_term_memory,
+        )
     return output
 
 
@@ -46,7 +55,19 @@ def load_recent_context(workspace: Path) -> str:
     return path.read_text(encoding="utf-8").strip()
 
 
-def append_turn_log(workspace: Path, output: PassiveTurnOutput, recent_context: str) -> None:
+def load_long_term_memory(workspace: Path) -> str:
+    path = workspace / "memory" / "MEMORY.md"
+    if not path.exists():
+        return ""
+    return path.read_text(encoding="utf-8").strip()
+
+
+def append_turn_log(
+    workspace: Path,
+    output: PassiveTurnOutput,
+    recent_context: str,
+    long_term_memory: str,
+) -> None:
     state_dir = workspace / "state"
     state_dir.mkdir(parents=True, exist_ok=True)
     log_path = state_dir / "turns.log"
@@ -71,11 +92,13 @@ def append_turn_log(workspace: Path, output: PassiveTurnOutput, recent_context: 
             "created_at": record["created_at"],
         },
         "context": context_bundle,
+        "memory": {"long_term_memory_preview": long_term_memory[:500]},
         "response": {"text": record["response"]},
     }
     artifact_name = f"turn_{record['created_at'].replace(':', '-').replace('.', '-')}.json"
     artifact_path = state_dir / "turn_artifacts" / artifact_name
     write_json(artifact_path, artifact)
+    append_postprocess_queue(state_dir, artifact_name, record)
 
 
 def dispatch_response(turn: TurnEnvelope) -> str:
@@ -103,3 +126,15 @@ def extract_memory_placeholders(recent_context: str) -> list[str]:
 
 def build_recent_turn_hints(record: dict) -> list[str]:
     return [f"user:{record['message']}", f"assistant:{record['response']}"]
+
+
+def append_postprocess_queue(state_dir: Path, artifact_name: str, record: dict) -> None:
+    queue_path = state_dir / "postprocess_queue.jsonl"
+    payload = {
+        "turn_id": artifact_name.removesuffix(".json"),
+        "created_at": record["created_at"],
+        "artifact": f"turn_artifacts/{artifact_name}",
+        "status": "pending",
+    }
+    with queue_path.open("a", encoding="utf-8") as fp:
+        fp.write(json.dumps(payload, ensure_ascii=False) + "\n")

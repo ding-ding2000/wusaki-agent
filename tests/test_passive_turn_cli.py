@@ -12,6 +12,10 @@ def test_run_passive_turn_persists_logs(tmp_path: Path) -> None:
     workspace = tmp_path / ".wusaki"
     memory_dir = workspace / "memory"
     memory_dir.mkdir(parents=True, exist_ok=True)
+    (memory_dir / "MEMORY.md").write_text(
+        "# Long-term Memory\n\n- 用户偏好简洁回答\n",
+        encoding="utf-8",
+    )
     (memory_dir / "RECENT_CONTEXT.md").write_text(
         "# Recent Context\n\n- 用户正在调试被动回合\n",
         encoding="utf-8",
@@ -34,6 +38,7 @@ def test_run_passive_turn_persists_logs(tmp_path: Path) -> None:
     assert latest["channel"] == "cli"
     assert latest["user_id"] == "demo"
     assert "用户正在调试被动回合" in latest["context_used"]["recent_context_preview"]
+    assert "用户偏好简洁回答" in latest["context_used"]["long_term_memory_preview"]
 
     turns_log = workspace / "state" / "turns.log"
     assert turns_log.exists()
@@ -52,6 +57,15 @@ def test_run_passive_turn_persists_logs(tmp_path: Path) -> None:
     assert "用户正在调试被动回合" in artifact["context"]["memory_placeholders"][0]
     assert artifact["context"]["recent_turn_hints"][0] == "user:你好"
     assert artifact["context"]["recent_turn_hints"][1].startswith("assistant:")
+    assert "用户偏好简洁回答" in artifact["memory"]["long_term_memory_preview"]
+
+    queue_path = workspace / "state" / "postprocess_queue.jsonl"
+    assert queue_path.exists()
+    queue_lines = queue_path.read_text(encoding="utf-8").strip().splitlines()
+    assert len(queue_lines) == 1
+    queue_item = json.loads(queue_lines[0])
+    assert queue_item["status"] == "pending"
+    assert queue_item["artifact"].startswith("turn_artifacts/turn_")
 
 
 def test_dispatch_response_uses_channel_adapters() -> None:

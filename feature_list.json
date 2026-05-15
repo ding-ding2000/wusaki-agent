@@ -109,7 +109,8 @@
         "Passive turn now dispatches via channel adapters (`qq`/`telegram`) with deterministic CLI fallback.",
         "Introduced normalized `PassiveTurnOutput` envelope model and unified passive-turn serialization around it.",
         "Expanded passive artifact context into a `context_bundle` with recent context, memory placeholders, and recent turn hints.",
-        "Added `passive-turn --dry-run` path to validate passive pipeline output without writing state files."
+        "Added `passive-turn --dry-run` path to validate passive pipeline output without writing state files.",
+        "Passive turn now reads both `MEMORY.md` and `RECENT_CONTEXT.md` before response and appends a postprocess queue entry after response."
       ]
     },
     {

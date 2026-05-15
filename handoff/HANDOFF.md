@@ -240,3 +240,23 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: continue F002 by adding passive turn-id generation and linking turns.log entries to artifact filenames for stronger traceability.
+
+## R015 - F002
+
+- Date: 2026-05-15
+- Task: complete passive-turn context input and postprocess handoff linkage
+- Changes:
+  - updated [passive.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/agent/passive.py)
+  - added long-term memory loading from `memory/MEMORY.md`
+  - passive output `context_used` now includes `long_term_memory_preview`
+  - artifact schema now includes `memory.long_term_memory_preview`
+  - added `postprocess_queue.jsonl` appends for each persisted turn
+  - extended [test_passive_turn_cli.py](/home/dingding/python/wusaki-agent/tests/test_passive_turn_cli.py):
+    - validate long-term memory preview injection
+    - validate postprocess queue item creation
+  - updated F002 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: run acceptance-focused verification commands for F002 and close F002 if all criteria are satisfied.
