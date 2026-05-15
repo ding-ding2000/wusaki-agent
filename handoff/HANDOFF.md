@@ -149,3 +149,20 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: continue F002 by injecting memory context placeholders into passive-turn and persisting structured turn artifacts for downstream consolidation.
+
+## R010 - F002
+
+- Date: 2026-05-15
+- Task: add recent-context placeholder injection and structured passive turn artifacts
+- Changes:
+  - updated [passive.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/agent/passive.py)
+  - added `load_recent_context()` to read `memory/RECENT_CONTEXT.md`
+  - passive turn record now includes `context_used.recent_context_preview`
+  - added structured artifact output under `.wusaki/state/turn_artifacts/turn_*.json`
+  - extended [test_passive_turn_cli.py](/home/dingding/python/wusaki-agent/tests/test_passive_turn_cli.py) to verify context injection and artifact generation
+  - updated F002 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: continue F002 by adding channel adapter integration in passive-turn (`cli`/`qq`/`telegram` dispatch abstraction) while keeping deterministic fallback.

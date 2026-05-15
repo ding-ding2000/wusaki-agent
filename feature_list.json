@@ -104,7 +104,8 @@
       "progress_notes": [
         "Added `wusaki-agent passive-turn` CLI command for one-round passive execution.",
         "Implemented deterministic passive response generation and turn log persistence under `.wusaki/state/`.",
-        "Added tests for passive turn runtime log outputs."
+        "Added tests for passive turn runtime log outputs.",
+        "Passive turn now injects recent-context placeholder from `memory/RECENT_CONTEXT.md` and writes structured turn artifacts for downstream consolidation."
       ]
     },
     {
