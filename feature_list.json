@@ -149,7 +149,7 @@
       "title": "向量记忆兼容层",
       "milestone": "M2",
       "priority": "P1",
-      "status": "in_progress",
+      "status": "done",
       "summary": "建立语义检索接口、向量存储占位实现和与 Akashic 路线兼容的抽象层。",
       "deliverables": [
         "src/wusaki_agent/memory/vector.py",
@@ -166,7 +166,8 @@
       "progress_notes": [
         "Introduced shared vector memory contract (`retrieve/remember/forget`) via typed request/result models.",
         "Implemented deterministic in-memory `StubVectorMemory` with replaceable `VectorMemory` protocol compatibility.",
-        "Added contract tests covering remember -> retrieve -> forget behavior and safe missing-id forget semantics."
+        "Added contract tests covering remember -> retrieve -> forget behavior and safe missing-id forget semantics.",
+        "Validated F004 acceptance flow by running explicit remember/retrieve/forget script and confirming contract behavior."
       ]
     },
     {

@@ -347,3 +347,21 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: run acceptance-focused F004 verification and close F004 if protocol compatibility criteria are satisfied.
+
+## R020 - F004
+
+- Date: 2026-05-15
+- Task: acceptance verification and closure of vector memory compatibility feature
+- Changes:
+  - ran explicit acceptance script with `.venv/bin/python` to validate:
+    - `remember()` returns a deterministic memory id
+    - `retrieve()` can recall inserted memory
+    - `forget()` removes memory and retrieval returns empty
+  - updated [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json) to set `F004.status = done`
+  - appended final F004 acceptance note in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/python` contract script (remember/retrieve/forget)
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: start F005 (`主动推送与 MCP 来源抽象`) with first `alert/content/context` source model and dry-run decision contract.
