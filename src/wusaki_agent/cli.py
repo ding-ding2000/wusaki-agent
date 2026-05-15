@@ -101,6 +101,46 @@ def round_start(
     console.print(f"Started round: {round_id} ({task_id})")
 
 
+@app.command("round-finish")
+def round_finish(
+    verification: list[str] = typer.Option(  # noqa: B008
+        ...,
+        "--verification",
+        help="Deterministic verification command. Pass multiple times if needed.",
+    ),
+    completed_on: str = typer.Option(
+        ...,
+        "--completed-on",
+        help="Completion date, e.g. 2026-05-15.",
+    ),
+) -> None:
+    project = project_root()
+    progress_path = project / "progress_journal.json"
+    progress_state = read_json(progress_path)
+
+    active_round = progress_state.get("active_round")
+    if not active_round:
+        raise typer.BadParameter("No active round found. Start one with `round-start` first.")
+    if not verification:
+        raise typer.BadParameter("At least one deterministic verification command is required.")
+
+    rounds = progress_state.get("rounds", [])
+    target = None
+    for item in rounds:
+        if item.get("round_id") == active_round:
+            target = item
+            break
+    if target is None:
+        raise typer.BadParameter(f"Active round id not found in rounds: {active_round}")
+
+    target["status"] = "done"
+    target["verification"] = verification
+    target["completed_on"] = completed_on
+    progress_state["active_round"] = None
+    write_json(progress_path, progress_state)
+    console.print(f"Finished round: {active_round}")
+
+
 @app.command("init-workspace")
 def init_workspace_cmd(
     workspace: Path = typer.Option(DEFAULT_WORKSPACE, help="Workspace directory."),  # noqa: B008

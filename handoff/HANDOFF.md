@@ -45,3 +45,20 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: F007 continue with `round-finish` command that enforces verification evidence before closing `active_round`.
+
+## R004 - F007
+
+- Date: 2026-05-15
+- Task: add guarded command to finish active relay rounds
+- Changes:
+  - added `round-finish` command in [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py)
+  - command behavior:
+    - refuses finish when no `active_round` exists
+    - requires at least one `--verification` argument
+    - marks active round as `done`, stores verification list and `completed_on`, then clears `active_round`
+  - updated F007 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: F007 continue by adding a `round-commit` command to attach commit hash to the just-finished round and reject empty hashes.
