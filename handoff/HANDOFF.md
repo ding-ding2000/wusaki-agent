@@ -326,3 +326,24 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: start F004 (`向量记忆兼容层`) with a minimal retrieve/remember contract stub and tests.
+
+## R019 - F004
+
+- Date: 2026-05-15
+- Task: implement vector memory compatibility contract and deterministic stub
+- Changes:
+  - expanded [types.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/memory/types.py) with:
+    - `MemoryRecord`
+    - `RememberRequest` / `RememberResult`
+    - `ForgetRequest` / `ForgetResult`
+    - `now_iso()` utility
+  - updated [vector.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/memory/vector.py):
+    - added `VectorMemory` protocol (`retrieve/remember/forget`)
+    - upgraded `StubVectorMemory` to deterministic in-memory contract implementation
+  - added [test_vector_memory_contract.py](/home/dingding/python/wusaki-agent/tests/test_vector_memory_contract.py)
+  - updated F004 status to `in_progress` and added progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: run acceptance-focused F004 verification and close F004 if protocol compatibility criteria are satisfied.
