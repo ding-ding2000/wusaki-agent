@@ -301,3 +301,28 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: run acceptance-focused F003 verification (`memory-consolidate` end-to-end) and close F003 if criteria are met.
+
+## R018 - F003
+
+- Date: 2026-05-15
+- Task: run F003 acceptance verification and close feature
+- Changes:
+  - executed end-to-end acceptance flow:
+    - `wusaki-agent passive-turn --channel cli --user demo --message 'F003验收消息A'`
+    - `wusaki-agent memory-consolidate --workspace /home/dingding/python/wusaki-agent/.wusaki`
+  - validated outputs:
+    - `.wusaki/memory/HISTORY.md` appended timeline entry with source marker
+    - `.wusaki/memory/PENDING.md` appended requested-memory entry
+    - `.wusaki/memory/RECENT_CONTEXT.md` updated recent turn hints
+    - `.wusaki/state/postprocess_queue.jsonl` marked processed items `done`
+    - `.wusaki/state/consolidation_index.json` tracks processed turn ids
+    - second `memory-consolidate` run is idempotent (`Processed: 0`)
+  - updated [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json) to set `F003.status = done`
+  - appended final F003 acceptance note in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent passive-turn --channel cli --user demo --message 'F003验收消息A'`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent memory-consolidate --workspace /home/dingding/python/wusaki-agent/.wusaki`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: start F004 (`向量记忆兼容层`) with a minimal retrieve/remember contract stub and tests.
