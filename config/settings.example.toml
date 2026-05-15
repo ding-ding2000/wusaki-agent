@@ -25,8 +25,8 @@ chat_id = ""
 enabled = false
 profile = "daily"
 cooldown_minutes = 120
+max_messages_per_hour = 1
 
 [drift]
 enabled = true
 min_interval_minutes = 60
-

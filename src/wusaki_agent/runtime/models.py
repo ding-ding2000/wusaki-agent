@@ -17,6 +17,9 @@ class TurnEnvelope:
 class TickDecision:
     decision: str
     reason: str
+    should_trigger_drift: bool = False
+    selected_source_id: str | None = None
+    selected_item_id: str | None = None
 
 
 @dataclass(slots=True)

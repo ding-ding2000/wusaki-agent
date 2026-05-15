@@ -175,7 +175,7 @@
       "title": "主动推送与 MCP 来源抽象",
       "milestone": "M3",
       "priority": "P0",
-      "status": "planned",
+      "status": "done",
       "summary": "定义 alert/content/context 三类来源、tick 状态、发送/跳过决策和节流接口。",
       "deliverables": [
         "src/wusaki_agent/proactive/tick.py",
@@ -191,6 +191,14 @@
         "系统能处理 alert/content/context 三类输入。",
         "支持冷却时间和频率控制。",
         "无内容时可切换到 Drift。"
+      ],
+      "progress_notes": [
+        "Introduced MCP source abstraction with explicit `alert/content/context` typing and deterministic pull contract.",
+        "Implemented proactive dry-run tick decision model with cooldown and hourly frequency guardrails.",
+        "Added no-content fallback signal (`should_trigger_drift`) so proactive pipeline can hand control to Drift.",
+        "Extended CLI `proactive-tick --dry-run` to output auditable send/skip rationale and selected source/item ids.",
+        "Added deterministic tests covering send/cooldown/rate-limit/no-content decision branches and 3 source kinds.",
+        "Validated F005 acceptance via proactive dry-run output plus full deterministic checks (`ruff` and `pytest`)."
       ]
     },
     {

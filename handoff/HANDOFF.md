@@ -365,3 +365,36 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: start F005 (`主动推送与 MCP 来源抽象`) with first `alert/content/context` source model and dry-run decision contract.
+
+## R021 - F005
+
+- Date: 2026-05-15
+- Task: complete proactive tick and MCP source abstraction with deterministic dry-run decisions
+- Changes:
+  - expanded [sources.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/mcp/sources.py):
+    - added `SourceKind` (`alert`/`content`/`context`)
+    - added `SourceItem` typed payload model
+    - extended `ProactiveSource` with `source_id`, `kind`, and deterministic `pull()` contract
+  - expanded [tick.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/proactive/tick.py):
+    - added `TickState` for timing/rate context
+    - implemented `dry_run_tick()` decision flow:
+      - cooldown skip
+      - hourly rate-limit skip
+      - send on eligible MCP item
+      - no-content skip with `should_trigger_drift=True`
+  - expanded [models.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/runtime/models.py):
+    - enriched `TickDecision` with drift flag and selected source/item ids
+  - updated proactive config and template:
+    - [config.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/config.py)
+    - [settings.example.toml](/home/dingding/python/wusaki-agent/config/settings.example.toml)
+    - added `proactive.max_messages_per_hour`
+  - updated [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py):
+    - `proactive-tick --dry-run` now executes deterministic tick inputs and prints auditable decision fields
+  - added [test_proactive_tick.py](/home/dingding/python/wusaki-agent/tests/test_proactive_tick.py) for proactive decision contracts
+  - updated [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json) to set `F005.status = done`
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent proactive-tick --dry-run`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: start F006 (`Drift 空闲任务框架`) by wiring proactive no-content fallback signal into a first drift dispatch entrypoint.

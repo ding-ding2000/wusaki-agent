@@ -50,6 +50,7 @@ class ProactiveSection(BaseModel):
     enabled: bool = False
     profile: Literal["daily", "quiet", "dev_verify"] = "daily"
     cooldown_minutes: int = 120
+    max_messages_per_hour: int = 1
 
 
 class DriftSection(BaseModel):
@@ -84,4 +85,3 @@ def ensure_default_settings(path: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(default_settings_template_path().read_text(encoding="utf-8"), encoding="utf-8")
     return path
-

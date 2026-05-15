@@ -13,10 +13,11 @@ from wusaki_agent.config import Settings, ensure_default_settings
 from wusaki_agent.drift.skills import discover_skills
 from wusaki_agent.feature_registry import FeatureRegistry
 from wusaki_agent.json_io import read_json, write_json
+from wusaki_agent.mcp.sources import ProactiveSource, SourceItem
 from wusaki_agent.memory.markdown import run_consolidation
 from wusaki_agent.observability.logging import configure_logging
 from wusaki_agent.paths import default_workspace_path, feature_list_path, project_root
-from wusaki_agent.proactive.tick import dry_run_tick
+from wusaki_agent.proactive.tick import TickState, dry_run_tick
 from wusaki_agent.runtime.models import TurnEnvelope
 from wusaki_agent.workspace.bootstrap import init_workspace, verify_workspace
 
@@ -252,9 +253,51 @@ def drift_scan(
 def proactive_tick(dry_run: bool = typer.Option(True, help="Run in dry-run mode.")) -> None:
     if not dry_run:
         raise typer.BadParameter("Only dry-run mode is available in the current scaffold.")
-    decision = dry_run_tick()
+    settings = Settings.from_file(ensure_default_settings(DEFAULT_SETTINGS_PATH))
+    now = datetime.utcnow()
+    sources = [
+        ProactiveSource(
+            source_id="dev-alert-feed",
+            server="mcp.dev",
+            channel="notices",
+            kind="alert",
+            sample_items=[
+                SourceItem(
+                    item_id="alert-001",
+                    kind="alert",
+                    title="Dry-run alert",
+                    body="This is a deterministic proactive dry-run sample.",
+                    created_at=now,
+                    importance=10,
+                )
+            ],
+        ),
+        ProactiveSource(
+            source_id="dev-content-feed",
+            server="mcp.dev",
+            channel="articles",
+            kind="content",
+            sample_items=[],
+        ),
+        ProactiveSource(
+            source_id="dev-context-feed",
+            server="mcp.dev",
+            channel="context",
+            kind="context",
+            sample_items=[],
+        ),
+    ]
+    decision = dry_run_tick(
+        sources=sources,
+        state=TickState(now=now),
+        cooldown_minutes=settings.proactive.cooldown_minutes,
+        max_per_hour=settings.proactive.max_messages_per_hour,
+    )
     console.print(f"Decision: {decision.decision}")
     console.print(f"Reason: {decision.reason}")
+    console.print(f"Selected Source: {decision.selected_source_id}")
+    console.print(f"Selected Item: {decision.selected_item_id}")
+    console.print(f"Trigger Drift: {decision.should_trigger_drift}")
 
 
 @app.command("passive-turn")
