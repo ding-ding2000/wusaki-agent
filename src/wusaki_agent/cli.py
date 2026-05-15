@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import typer
 from rich.console import Console
@@ -9,7 +10,7 @@ from rich.table import Table
 from wusaki_agent.config import Settings, ensure_default_settings
 from wusaki_agent.drift.skills import discover_skills
 from wusaki_agent.feature_registry import FeatureRegistry
-from wusaki_agent.json_io import read_json
+from wusaki_agent.json_io import read_json, write_json
 from wusaki_agent.observability.logging import configure_logging
 from wusaki_agent.paths import default_workspace_path, feature_list_path, project_root
 from wusaki_agent.proactive.tick import dry_run_tick
@@ -62,6 +63,42 @@ def round_status() -> None:
     table.add_row("Rounds Logged", str(len(progress_state.get("rounds", []))))
     table.add_row("Handoff Log", str(handoff_path))
     console.print(table)
+
+
+@app.command("round-start")
+def round_start(
+    round_id: str = typer.Option(..., "--round-id", help="Round id, e.g. R003."),
+    task_id: str = typer.Option(..., "--task-id", help="Feature task id, e.g. F007."),
+    summary: str = typer.Option(..., "--summary", help="Short summary for this round."),
+) -> None:
+    project = project_root()
+    progress_path = project / "progress_journal.json"
+    progress_state = read_json(progress_path)
+
+    if progress_state.get("active_round"):
+        raise typer.BadParameter(
+            "An active round already exists. Finish it before starting a new one."
+        )
+
+    rounds = progress_state.setdefault("rounds", [])
+    existing_ids = {item.get("round_id") for item in rounds}
+    if round_id in existing_ids:
+        raise typer.BadParameter(f"Round id already exists: {round_id}")
+
+    round_entry: dict[str, Any] = {
+        "round_id": round_id,
+        "task_id": task_id,
+        "status": "in_progress",
+        "summary": summary,
+        "verification": [],
+        "commit": None,
+        "completed_on": None,
+    }
+
+    progress_state["active_round"] = round_id
+    rounds.append(round_entry)
+    write_json(progress_path, progress_state)
+    console.print(f"Started round: {round_id} ({task_id})")
 
 
 @app.command("init-workspace")

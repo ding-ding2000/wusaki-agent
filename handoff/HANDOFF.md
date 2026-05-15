@@ -28,3 +28,20 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: F007 continue by adding `round-start`/`round-finish` guarded commands that refuse status mutation before deterministic verification.
+
+## R003 - F007
+
+- Date: 2026-05-15
+- Task: add guarded command to start one relay round at a time
+- Changes:
+  - added `round-start` command in [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py)
+  - command behavior:
+    - refuses start if `active_round` already exists
+    - refuses duplicate `round_id`
+    - appends one `in_progress` round entry and sets `active_round`
+  - updated F007 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: F007 continue with `round-finish` command that enforces verification evidence before closing `active_round`.

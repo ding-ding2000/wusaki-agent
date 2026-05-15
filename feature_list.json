@@ -215,7 +215,8 @@
       ],
       "progress_notes": [
         "Added relay-loop policy files and `wusaki-agent round-status` command.",
-        "CLI now exposes explicit round status from feature/progress/handoff state."
+        "CLI now exposes explicit round status from feature/progress/handoff state.",
+        "Added `wusaki-agent round-start` to activate exactly one in-progress relay round."
       ]
     },
     {
