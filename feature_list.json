@@ -270,7 +270,7 @@
       "title": "QQ / Telegram 渠道抽象",
       "milestone": "M4",
       "priority": "P1",
-      "status": "planned",
+      "status": "done",
       "summary": "定义统一 channel 协议、身份映射和消息收发占位实现，为 Feishu 预留扩展边界。",
       "deliverables": [
         "src/wusaki_agent/channels/base.py",
@@ -285,6 +285,14 @@
       "acceptance": [
         "核心 Agent 能在不侵入业务逻辑的前提下挂接渠道适配器。",
         "QQ 和 Telegram 可以复用同一套 turn 接口。"
+      ],
+      "progress_notes": [
+        "Upgraded channel contract with shared `ChannelMessage(kind=passive/proactive/drift)` so passive/proactive/drift paths use one adapter interface.",
+        "Added adapter registry `build_channel_adapters()` and default CLI adapter fallback to avoid channel-specific branching in core logic.",
+        "Implemented identity normalization in QQ/Telegram adapters (`qq:` / `tg:` prefix handling) for consistent user mapping behavior.",
+        "Updated passive dispatch path to use the unified adapter registry and shared message contract.",
+        "Added channel adapter contract tests covering registry shape, QQ/Telegram reusable turn interface, and proactive/drift message paths.",
+        "Validated F008 acceptance via adapter tests, full deterministic checks (`ruff` + `pytest`), and CLI simulated passive send flow."
       ]
     }
   ]

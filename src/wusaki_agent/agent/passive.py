@@ -3,9 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from wusaki_agent.channels.base import ChannelMessage
-from wusaki_agent.channels.qq import QqChannelAdapter
-from wusaki_agent.channels.telegram import TelegramChannelAdapter
+from wusaki_agent.channels.base import ChannelMessage, build_channel_adapters
 from wusaki_agent.json_io import write_json
 from wusaki_agent.runtime.models import PassiveTurnOutput, TurnEnvelope
 
@@ -102,14 +100,14 @@ def append_turn_log(
 
 
 def dispatch_response(turn: TurnEnvelope) -> str:
-    adapters = {
-        "qq": QqChannelAdapter(),
-        "telegram": TelegramChannelAdapter(),
-    }
-    message = ChannelMessage(channel=turn.channel, user_id=turn.user_id, text=turn.message)
-    adapter = adapters.get(turn.channel)
-    if adapter is None:
-        return f"[cli-placeholder] {turn.user_id}: 收到消息：{turn.message}"
+    adapters = build_channel_adapters()
+    adapter = adapters.get(turn.channel, adapters["cli"])
+    message = ChannelMessage(
+        channel=turn.channel,
+        user_id=turn.user_id,
+        text=turn.message,
+        kind="passive",
+    )
     return adapter.send(message)
 
 

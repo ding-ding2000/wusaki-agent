@@ -432,3 +432,33 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent drift-run --workspace /home/dingding/python/wusaki-agent/.wusaki-f006-test --skill backlog-tidy`
 - Result: pass
 - Next Suggested Task: continue F008 (`QQ / Telegram 渠道抽象`) by adding adapter contract tests for proactive/drift message paths.
+
+## R023 - F008
+
+- Date: 2026-05-16
+- Task: complete QQ/Telegram channel abstraction with unified adapter contract
+- Changes:
+  - updated [base.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/channels/base.py):
+    - added shared `ChannelMessage.kind` (`passive` / `proactive` / `drift`)
+    - added `normalize_user_id()` hook to `ChannelAdapter`
+    - added `CliChannelAdapter` as deterministic fallback
+    - added `build_channel_adapters()` registry for core runtime reuse
+  - updated [qq.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/channels/qq.py):
+    - added user-id normalization (`qq:` prefix support)
+    - unified message rendering for passive/proactive/drift paths
+  - updated [telegram.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/channels/telegram.py):
+    - added user-id normalization (`tg:` prefix support)
+    - unified message rendering for passive/proactive/drift paths
+  - updated [passive.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/agent/passive.py):
+    - passive dispatch now uses shared adapter registry instead of inline channel branching
+  - added [test_channel_adapters.py](/home/dingding/python/wusaki-agent/tests/test_channel_adapters.py):
+    - verifies registry contains `qq`/`telegram`/`cli`
+    - verifies QQ and Telegram share the same turn message contract
+    - verifies proactive/drift message paths across adapters
+  - updated [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json) to set `F008.status = done`
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent passive-turn --channel qq --user qq:demo --message 'F008验收' --dry-run`
+- Result: pass
+- Next Suggested Task: open a polish round for cross-feature integration (proactive tick -> drift fallback -> channel send) end-to-end contract tests.
