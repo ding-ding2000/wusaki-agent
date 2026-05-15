@@ -398,3 +398,37 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: start F006 (`Drift 空闲任务框架`) by wiring proactive no-content fallback signal into a first drift dispatch entrypoint.
+
+## R022 - F006
+
+- Date: 2026-05-16
+- Task: complete first executable drift round framework with SKILL.md protocol reuse
+- Changes:
+  - expanded [skills.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/drift/skills.py):
+    - `DriftSkill` now includes `work_files` and `max_messages`
+    - parses `SKILL.md` front matter + body and extracts:
+      - work-file list from `## 工作文件`
+      - message cap signal (`0` for silent tasks, `1` for one-message tasks)
+    - added `run_drift_round()` with deterministic behavior:
+      - selects skill (or explicit `--skill`)
+      - reads/ensures listed work files
+      - enforces single-round completion
+      - writes auditable run records into `drift/drift.json`
+    - added `DriftRunResult` return contract for CLI/runtime integration
+  - updated [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py):
+    - added `wusaki-agent drift-run` command
+    - command prints skill/status/message/action summary for one drift round
+  - added [test_drift_round.py](/home/dingding/python/wusaki-agent/tests/test_drift_round.py):
+    - verifies skill metadata extraction
+    - verifies round execution and persistence record
+    - verifies silent skill (`backlog-tidy`) emits no message
+  - updated [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json) to set `F006.status = done`
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent init-workspace --workspace /home/dingding/python/wusaki-agent/.wusaki-f006-test`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent drift-scan --workspace /home/dingding/python/wusaki-agent/.wusaki-f006-test`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent verify-skeleton --workspace /home/dingding/python/wusaki-agent/.wusaki-f006-test`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/wusaki-agent drift-run --workspace /home/dingding/python/wusaki-agent/.wusaki-f006-test --skill backlog-tidy`
+- Result: pass
+- Next Suggested Task: continue F008 (`QQ / Telegram 渠道抽象`) by adding adapter contract tests for proactive/drift message paths.

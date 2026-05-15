@@ -10,7 +10,7 @@ from rich.table import Table
 
 from wusaki_agent.agent.passive import run_passive_turn
 from wusaki_agent.config import Settings, ensure_default_settings
-from wusaki_agent.drift.skills import discover_skills
+from wusaki_agent.drift.skills import discover_skills, run_drift_round
 from wusaki_agent.feature_registry import FeatureRegistry
 from wusaki_agent.json_io import read_json, write_json
 from wusaki_agent.mcp.sources import ProactiveSource, SourceItem
@@ -247,6 +247,19 @@ def drift_scan(
     for skill in skills:
         table.add_row(skill.name, skill.description, str(skill.path))
     console.print(table)
+
+
+@app.command("drift-run")
+def drift_run(
+    workspace: Path = typer.Option(DEFAULT_WORKSPACE, help="Workspace directory."),  # noqa: B008
+    skill: str | None = typer.Option(None, "--skill", help="Optional skill name to run."),
+) -> None:
+    result = run_drift_round(workspace=workspace, skill_name=skill)
+    console.print(f"Skill: {result.skill_name}")
+    console.print(f"Status: {result.status}")
+    console.print(f"Message Sent: {result.message_sent}")
+    console.print(f"Message Preview: {result.message_preview}")
+    console.print(f"Actions: {len(result.actions)}")
 
 
 @app.command("proactive-tick")

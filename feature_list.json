@@ -206,7 +206,7 @@
       "title": "Drift 空闲任务框架",
       "milestone": "M5",
       "priority": "P0",
-      "status": "planned",
+      "status": "done",
       "summary": "复用 SKILL.md 作为任务协议，支持任务发现、读取工作文件、静默结束和单次消息触达约束。",
       "deliverables": [
         "src/wusaki_agent/drift/skills.py",
@@ -221,6 +221,14 @@
         "系统能扫描有效 skill。",
         "一轮 Drift 必须显式结束并记录结果。",
         "预置至少两个可运行的任务模板。"
+      ],
+      "progress_notes": [
+        "Expanded `SKILL.md` parsing to extract drift work files and per-skill messaging limit signals.",
+        "Implemented deterministic `run_drift_round()` execution path with explicit completion status and action trace.",
+        "Added one-round result persistence into `drift/drift.json` for auditability (`skill`, `actions`, `message_sent`, `completed_at`).",
+        "Added `wusaki-agent drift-run` command to execute a selected drift skill and print round result summary.",
+        "Added deterministic tests for skill discovery metadata, drift round execution recording, and silent-skill no-message constraint.",
+        "Validated F006 acceptance via `drift-scan`, `verify-skeleton`, `drift-run`, plus full `ruff` and `pytest` checks."
       ]
     },
     {
