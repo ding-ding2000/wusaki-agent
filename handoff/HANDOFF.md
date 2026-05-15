@@ -223,3 +223,20 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: continue F002 by adding a deterministic `passive-turn --dry-run` option that validates pipeline shape without writing files.
+
+## R014 - F002
+
+- Date: 2026-05-15
+- Task: add deterministic passive dry-run mode without state writes
+- Changes:
+  - updated [passive.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/agent/passive.py)
+  - `run_passive_turn()` now supports `persist=False`
+  - updated [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py)
+  - added `passive-turn --dry-run` option; dry-run skips file writes
+  - extended [test_passive_turn_cli.py](/home/dingding/python/wusaki-agent/tests/test_passive_turn_cli.py) with dry-run no-persistence assertions
+  - updated F002 progress notes in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: continue F002 by adding passive turn-id generation and linking turns.log entries to artifact filenames for stronger traceability.

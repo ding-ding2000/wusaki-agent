@@ -108,7 +108,8 @@
         "Passive turn now injects recent-context placeholder from `memory/RECENT_CONTEXT.md` and writes structured turn artifacts for downstream consolidation.",
         "Passive turn now dispatches via channel adapters (`qq`/`telegram`) with deterministic CLI fallback.",
         "Introduced normalized `PassiveTurnOutput` envelope model and unified passive-turn serialization around it.",
-        "Expanded passive artifact context into a `context_bundle` with recent context, memory placeholders, and recent turn hints."
+        "Expanded passive artifact context into a `context_bundle` with recent context, memory placeholders, and recent turn hints.",
+        "Added `passive-turn --dry-run` path to validate passive pipeline output without writing state files."
       ]
     },
     {

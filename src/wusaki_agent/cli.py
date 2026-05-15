@@ -262,6 +262,7 @@ def passive_turn(
     user: str = typer.Option(..., "--user", help="User id."),
     message: str = typer.Option(..., "--message", help="Incoming message text."),
     workspace: Path = typer.Option(DEFAULT_WORKSPACE, help="Workspace directory."),  # noqa: B008
+    dry_run: bool = typer.Option(False, "--dry-run", help="Run without writing turn files."),
 ) -> None:
     turn = TurnEnvelope(
         channel=channel,
@@ -269,9 +270,12 @@ def passive_turn(
         message=message,
         created_at=datetime.utcnow(),
     )
-    result = run_passive_turn(turn, workspace)
+    result = run_passive_turn(turn, workspace, persist=not dry_run)
     console.print(f"Response: {result.response}")
-    console.print(f"Turn log: {workspace / 'state' / 'turns.log'}")
+    if dry_run:
+        console.print("Mode: dry-run (no files written)")
+    else:
+        console.print(f"Turn log: {workspace / 'state' / 'turns.log'}")
 
 
 @app.callback()

@@ -81,3 +81,18 @@ def test_dispatch_response_uses_channel_adapters() -> None:
     )
     cli_text = dispatch_response(cli_turn)
     assert cli_text == "[cli-placeholder] u3: 收到消息：ping"
+
+
+def test_run_passive_turn_dry_run_does_not_persist(tmp_path: Path) -> None:
+    workspace = tmp_path / ".wusaki"
+    turn = TurnEnvelope(
+        channel="cli",
+        user_id="demo",
+        message="dry-run",
+        created_at=datetime(2026, 5, 15, 12, 0, 0),
+    )
+
+    result = run_passive_turn(turn, workspace, persist=False)
+    assert "dry-run" in result.response
+    assert not (workspace / "state" / "turns.log").exists()
+    assert not (workspace / "state" / "latest_turn.json").exists()

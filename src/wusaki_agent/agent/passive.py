@@ -17,7 +17,12 @@ def describe_passive_turn_contract(turn: TurnEnvelope) -> str:
     )
 
 
-def run_passive_turn(turn: TurnEnvelope, workspace: Path) -> PassiveTurnOutput:
+def run_passive_turn(
+    turn: TurnEnvelope,
+    workspace: Path,
+    *,
+    persist: bool = True,
+) -> PassiveTurnOutput:
     """Run one deterministic passive turn and persist minimal turn logs."""
     recent_context = load_recent_context(workspace)
     response_text = dispatch_response(turn)
@@ -29,7 +34,8 @@ def run_passive_turn(turn: TurnEnvelope, workspace: Path) -> PassiveTurnOutput:
         context_used={"recent_context_preview": recent_context[:200]},
         response=response_text,
     )
-    append_turn_log(workspace, output, recent_context=recent_context)
+    if persist:
+        append_turn_log(workspace, output, recent_context=recent_context)
     return output
 
 
