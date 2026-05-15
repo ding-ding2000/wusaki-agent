@@ -129,3 +129,23 @@
   - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
 - Result: pass
 - Next Suggested Task: start F002 (`被动回复主链路`) via relay round process.
+
+## R009 - F002
+
+- Date: 2026-05-15
+- Task: implement first executable passive-turn slice with deterministic output and log persistence
+- Changes:
+  - added passive runtime flow in [passive.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/agent/passive.py):
+    - `run_passive_turn()`
+    - `append_turn_log()`
+  - added `passive-turn` CLI command in [cli.py](/home/dingding/python/wusaki-agent/src/wusaki_agent/cli.py)
+  - passive turn now writes:
+    - `.wusaki/state/turns.log` (jsonl append)
+    - `.wusaki/state/latest_turn.json` (last turn snapshot)
+  - added [test_passive_turn_cli.py](/home/dingding/python/wusaki-agent/tests/test_passive_turn_cli.py)
+  - updated F002 status to `in_progress` in [feature_list.json](/home/dingding/python/wusaki-agent/feature_list.json)
+- Verification:
+  - `/home/dingding/python/wusaki-agent/.venv/bin/ruff check .`
+  - `/home/dingding/python/wusaki-agent/.venv/bin/pytest`
+- Result: pass
+- Next Suggested Task: continue F002 by injecting memory context placeholders into passive-turn and persisting structured turn artifacts for downstream consolidation.

@@ -84,7 +84,7 @@
       "title": "被动回复主链路",
       "milestone": "M1",
       "priority": "P0",
-      "status": "planned",
+      "status": "in_progress",
       "summary": "定义 passive turn 输入输出、上下文注入、回复生成和 turn 落盘接口。",
       "deliverables": [
         "src/wusaki_agent/agent/passive.py",
@@ -100,6 +100,11 @@
         "单轮消息可产出回复。",
         "回复前能读取长期记忆和近期上下文。",
         "回复后消息进入后处理链路。"
+      ],
+      "progress_notes": [
+        "Added `wusaki-agent passive-turn` CLI command for one-round passive execution.",
+        "Implemented deterministic passive response generation and turn log persistence under `.wusaki/state/`.",
+        "Added tests for passive turn runtime log outputs."
       ]
     },
     {

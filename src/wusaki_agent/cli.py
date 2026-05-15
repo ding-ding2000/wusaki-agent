@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -7,6 +8,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from wusaki_agent.agent.passive import run_passive_turn
 from wusaki_agent.config import Settings, ensure_default_settings
 from wusaki_agent.drift.skills import discover_skills
 from wusaki_agent.feature_registry import FeatureRegistry
@@ -14,6 +16,7 @@ from wusaki_agent.json_io import read_json, write_json
 from wusaki_agent.observability.logging import configure_logging
 from wusaki_agent.paths import default_workspace_path, feature_list_path, project_root
 from wusaki_agent.proactive.tick import dry_run_tick
+from wusaki_agent.runtime.models import TurnEnvelope
 from wusaki_agent.workspace.bootstrap import init_workspace, verify_workspace
 
 app = typer.Typer(help="Wusaki agent bootstrap CLI")
@@ -251,6 +254,24 @@ def proactive_tick(dry_run: bool = typer.Option(True, help="Run in dry-run mode.
     decision = dry_run_tick()
     console.print(f"Decision: {decision.decision}")
     console.print(f"Reason: {decision.reason}")
+
+
+@app.command("passive-turn")
+def passive_turn(
+    channel: str = typer.Option(..., "--channel", help="Channel name, e.g. cli."),
+    user: str = typer.Option(..., "--user", help="User id."),
+    message: str = typer.Option(..., "--message", help="Incoming message text."),
+    workspace: Path = typer.Option(DEFAULT_WORKSPACE, help="Workspace directory."),  # noqa: B008
+) -> None:
+    turn = TurnEnvelope(
+        channel=channel,
+        user_id=user,
+        message=message,
+        created_at=datetime.utcnow(),
+    )
+    result = run_passive_turn(turn, workspace)
+    console.print(f"Response: {result['response']}")
+    console.print(f"Turn log: {workspace / 'state' / 'turns.log'}")
 
 
 @app.callback()
