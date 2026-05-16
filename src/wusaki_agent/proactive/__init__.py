@@ -1,2 +1,0 @@
-"""Proactive polling models."""
-

@@ -1,0 +1,24 @@
+services:
+  wusaki-debug:
+    build:
+      context: ../..
+      dockerfile: docker/debug/Dockerfile
+    image: wusaki-agent-debug:latest
+    working_dir: /app
+    environment:
+      WUSAKI_DEBUG_CONFIG: /sandbox/config.toml
+      WUSAKI_DEBUG_WORKSPACE: /sandbox/workspace
+      WUSAKI_DASHBOARD_HOST: 0.0.0.0
+      WUSAKI_DASHBOARD_PORT: "2236"
+      WUSAKI_HOST_GID: "${GID:-1000}"
+      WUSAKI_HOST_UID: "${UID:-1000}"
+      WUSAKI_DEBUG_PROFILE: "${WUSAKI_DEBUG_PROFILE:-default}"
+      HOME: /sandbox/home
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ../..:/app
+      - ./profiles/${WUSAKI_DEBUG_PROFILE:-default}:/sandbox
+    ports:
+      - "2237:2236"
+    stdin_open: true
+    tty: true
