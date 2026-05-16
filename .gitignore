@@ -30,5 +30,4 @@ plugins/**/.data/
 .vscode/
 
 # Generated / temporary
-/rss/
 /start.sh
