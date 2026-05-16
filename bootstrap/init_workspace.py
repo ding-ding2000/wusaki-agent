@@ -8,9 +8,9 @@ from agent.config import Config
 from agent.memory import DEFAULT_SELF_MD, MemoryStore
 from bootstrap.memory import ensure_memory_plugin_storage
 from infra.persistence.json_store import save_json
-from proactive_v2.anyaction import QuotaStore
-from proactive_v2.loop import ProactiveLoop
-from proactive_v2.state import ProactiveStateStore
+from proactive_v1.anyaction import QuotaStore
+from proactive_v1.loop import ProactiveLoop
+from proactive_v1.state import ProactiveStateStore
 from session.store import SessionStore
 
 _EMPTY_FILES: dict[str, str] = {

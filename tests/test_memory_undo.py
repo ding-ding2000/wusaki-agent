@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from memory2.store import MemoryStore2
+from memory.store import MemoryStore2
 from plugins.default_memory.engine import DefaultMemoryEngine
 
 
@@ -24,7 +24,7 @@ def _engine(store: MemoryStore2) -> DefaultMemoryEngine:
 
 
 def test_undo_marks_direct_source_memory_superseded(tmp_path: Path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     try:
         engine = _engine(store)
         item_id = _item_id(
@@ -45,7 +45,7 @@ def test_undo_marks_direct_source_memory_superseded(tmp_path: Path):
 
 
 def test_undo_dry_run_does_not_change_memory_status(tmp_path: Path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     try:
         engine = _engine(store)
         item_id = _item_id(
@@ -66,7 +66,7 @@ def test_undo_dry_run_does_not_change_memory_status(tmp_path: Path):
 
 
 def test_undo_marks_consolidation_window_memory_superseded(tmp_path: Path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     try:
         engine = _engine(store)
         base = json.dumps(["cli:1:0", "cli:1:1", "cli:1:2"], ensure_ascii=False)
@@ -98,7 +98,7 @@ def test_undo_marks_consolidation_window_memory_superseded(tmp_path: Path):
 
 
 def test_undo_restores_old_memory_replaced_by_affected_new_memory(tmp_path: Path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     try:
         engine = _engine(store)
         old_id = _item_id(

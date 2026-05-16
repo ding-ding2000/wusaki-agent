@@ -52,7 +52,7 @@ class ProbePaths:
 
     @property
     def memory_db(self) -> Path:
-        return self.workspace / "memory" / "memory2.db"
+        return self.workspace / "memory" / "memory.db"
 
 
 @dataclass

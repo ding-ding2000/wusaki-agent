@@ -8,10 +8,10 @@ from agent.looping.core import AgentLoop
 from agent.provider import LLMProvider
 from agent.tool_hooks import ToolHook
 from agent.tools.message_push import MessagePushTool
-from proactive_v2.loop import ProactiveLoop
-from proactive_v2.memory_optimizer import MemoryOptimizer, MemoryOptimizerLoop
-from proactive_v2.presence import PresenceStore
-from proactive_v2.state import ProactiveStateStore
+from proactive_v1.loop import ProactiveLoop
+from proactive_v1.memory_optimizer import MemoryOptimizer, MemoryOptimizerLoop
+from proactive_v1.presence import PresenceStore
+from proactive_v1.state import ProactiveStateStore
 from session.manager import SessionManager
 
 if TYPE_CHECKING:

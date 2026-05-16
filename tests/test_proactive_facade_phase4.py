@@ -6,10 +6,10 @@ from unittest.mock import MagicMock
 
 from bootstrap.proactive import _build_proactive_provider, build_proactive_runtime
 from agent.core.proactive_turn import ProactiveTurnPipeline, ProactiveTurnPipelineDeps
-from proactive_v2.config import ProactiveConfig
-from proactive_v2.context import AgentTickContext
-from proactive_v2.gateway import GatewayDeps, GatewayResult
-from proactive_v2.sensor import Sensor
+from proactive_v1.config import ProactiveConfig
+from proactive_v1.context import AgentTickContext
+from proactive_v1.gateway import GatewayDeps, GatewayResult
+from proactive_v1.sensor import Sensor
 
 
 def test_build_proactive_runtime_accepts_facade_memory(tmp_path):

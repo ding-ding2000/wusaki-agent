@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from proactive_v2 import mcp_sources
+from proactive_v1 import mcp_sources
 
 
 class _FakePool:

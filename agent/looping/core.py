@@ -46,7 +46,7 @@ from bus.events_lifecycle import (
 )
 from bus.processing import ProcessingState
 from bus.queue import MessageBus
-from proactive_v2.presence import PresenceStore
+from proactive_v1.presence import PresenceStore
 from agent.provider import LLMProvider
 from agent.tools.registry import ToolRegistry
 from session.manager import SessionManager

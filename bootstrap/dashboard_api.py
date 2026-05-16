@@ -23,8 +23,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from agent.memory import MemoryStore
-from proactive_v2.memory_optimizer import MemoryOptimizerBusy
-from proactive_v2.state import ProactiveStateStore
+from proactive_v1.memory_optimizer import MemoryOptimizerBusy
+from proactive_v1.state import ProactiveStateStore
 from core.common.timekit import utcnow
 from core.memory.engine import MemoryAdminApi
 from session.store import SessionStore

@@ -61,7 +61,7 @@ def _make_default_engine(
     engine._post_response_worker = post_response_worker
     engine._event_bus = event_publisher
     engine.closeables = []
-    engine._wire_memory2_events()
+    engine._wire_memory_events()
     return engine
 
 
@@ -830,11 +830,11 @@ def test_build_memory_runtime_exposes_default_memory_engine(
     monkeypatch.setattr("agent.tools.memorize.MemorizeTool", _MemorizeTool)
     monkeypatch.setattr("agent.tools.filesystem.WriteFileTool", _WriteFileTool)
     monkeypatch.setattr("agent.tools.filesystem.EditFileTool", _EditFileTool)
-    monkeypatch.setattr("memory2.store.MemoryStore2", _Store2)
-    monkeypatch.setattr("memory2.embedder.Embedder", _Embedder)
-    monkeypatch.setattr("memory2.memorizer.Memorizer", _Memorizer)
-    monkeypatch.setattr("memory2.retriever.Retriever", _Retriever)
-    monkeypatch.setattr("memory2.procedure_tagger.ProcedureTagger", _ProcedureTagger)
+    monkeypatch.setattr("memory.store.MemoryStore2", _Store2)
+    monkeypatch.setattr("memory.embedder.Embedder", _Embedder)
+    monkeypatch.setattr("memory.memorizer.Memorizer", _Memorizer)
+    monkeypatch.setattr("memory.retriever.Retriever", _Retriever)
+    monkeypatch.setattr("memory.procedure_tagger.ProcedureTagger", _ProcedureTagger)
 
     runtime = build_memory_runtime(
         config=Config(

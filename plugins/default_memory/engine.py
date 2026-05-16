@@ -36,14 +36,14 @@ from core.memory.engine import (
 )
 from core.memory.events import ConsolidationCommitted, TurnIngested
 from core.net.http import SharedHttpResources
-from memory2.embedder import Embedder
-from memory2.memorizer import Memorizer
-from memory2.post_response_worker import PostResponseMemoryWorker
-from memory2.procedure_tagger import ProcedureTagger
-from memory2.query_builder import build_procedure_queries
-from memory2.retriever import Retriever
-from memory2.rule_schema import build_procedure_rule_schema
-from memory2.store import MemoryStore2
+from memory.embedder import Embedder
+from memory.memorizer import Memorizer
+from memory.post_response_worker import PostResponseMemoryWorker
+from memory.procedure_tagger import ProcedureTagger
+from memory.query_builder import build_procedure_queries
+from memory.retriever import Retriever
+from memory.rule_schema import build_procedure_rule_schema
+from memory.store import MemoryStore2
 from plugins.default_memory.config import DefaultMemoryConfig, resolve_memory_db_path
 
 if TYPE_CHECKING:
@@ -514,7 +514,7 @@ class DefaultMemoryEngine:
             light_model=self._light_model,
             event_publisher=event_publisher,
         )
-        self._wire_memory2_events()
+        self._wire_memory_events()
         self.closeables = [self._v2_store, self._embedder]
 
     @classmethod
@@ -531,7 +531,7 @@ class DefaultMemoryEngine:
         store = MemoryStore2(db_path)
         store.close()
 
-    def _wire_memory2_events(self) -> None:
+    def _wire_memory_events(self) -> None:
         if self._event_bus is None:
             return
         if self._post_response_worker is not None:
@@ -540,7 +540,7 @@ class DefaultMemoryEngine:
         if self._memorizer is not None:
             self._event_bus.on(ConsolidationCommitted, self._on_consolidation_committed)
 
-    # 对话提交后只入队，不在主回复链路里等待 memory2 后处理。
+    # 对话提交后只入队，不在主回复链路里等待 memory 后处理。
     def _on_turn_committed(self, event: TurnCommitted) -> None:
         if bool((event.extra or {}).get("skip_post_memory")):
             return

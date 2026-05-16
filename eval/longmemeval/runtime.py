@@ -78,7 +78,7 @@ async def create_runtime(config_path: Path, workspace: Path) -> BenchmarkRuntime
     from bootstrap.init_workspace import init_workspace
     from bootstrap.tools import build_core_runtime
     from core.net.http import SharedHttpResources
-    from memory2.profile_extractor import ProfileFactExtractor
+    from memory.profile_extractor import ProfileFactExtractor
 
     config = load_config(config_path)
 

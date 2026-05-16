@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from memory2.query_rewriter import GateDecision, QueryRewriter
+from memory.query_rewriter import GateDecision, QueryRewriter
 
 
 def _make_rewriter(llm_response: str) -> QueryRewriter:

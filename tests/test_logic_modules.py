@@ -11,8 +11,8 @@ import pytest
 
 from agent.prompting import is_context_frame
 from agent.provider import LLMResponse
-from proactive_v2.loop import ProactiveLoop
-from proactive_v2.memory_optimizer import (
+from proactive_v1.loop import ProactiveLoop
+from proactive_v1.memory_optimizer import (
     MemoryOptimizer,
     MemoryOptimizerLoop,
 )
@@ -399,9 +399,9 @@ async def test_proactive_loop_wrapper_methods_cover_paths(tmp_path: Path):
     ) == (0.5, {"x": 1})
     assert await loop._tick() == 0.2
     with pytest.MonkeyPatch.context() as mp:
-        mp.setattr("proactive_v2.loop.compute_energy", lambda last_user_at: 0.8)
-        mp.setattr("proactive_v2.loop.d_energy", lambda energy: 0.5)
-        mp.setattr("proactive_v2.loop.next_tick_from_score", lambda *args, **kwargs: 7)
+        mp.setattr("proactive_v1.loop.compute_energy", lambda last_user_at: 0.8)
+        mp.setattr("proactive_v1.loop.d_energy", lambda energy: 0.5)
+        mp.setattr("proactive_v1.loop.next_tick_from_score", lambda *args, **kwargs: 7)
         assert loop._next_interval() == 7
     await loop.run()
     loop._mcp_pool.connect_all.assert_awaited_once()

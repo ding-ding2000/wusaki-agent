@@ -11,13 +11,13 @@ from zoneinfo import ZoneInfo
 import pytest
 
 import agent.tools.recall_memory as recall_memory_module
-import memory2.retriever as retriever_module
+import memory.retriever as retriever_module
 from agent.provider import LLMProvider, LLMResponse
 from agent.tools.recall_memory import RecallMemoryTool
 from plugins.default_memory.engine import DefaultMemoryEngine
-from memory2.embedder import Embedder
-from memory2.retriever import Retriever
-from memory2.store import MemoryStore2
+from memory.embedder import Embedder
+from memory.retriever import Retriever
+from memory.store import MemoryStore2
 
 _MemoryHit: TypeAlias = dict[str, object]
 _EmbeddingRow: TypeAlias = tuple[
@@ -253,7 +253,7 @@ def test_parse_time_filter_supports_presets_and_ranges(
 
 
 def test_store_time_range_filters_mixed_timezone_happened_at(tmp_path: Path) -> None:
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     tz = ZoneInfo("Asia/Shanghai")
     store.upsert_item(
         "event",
@@ -290,7 +290,7 @@ def test_store_time_range_filters_mixed_timezone_happened_at(tmp_path: Path) -> 
 def test_store_time_range_limit_keeps_latest_events_in_chronological_order(
     tmp_path: Path,
 ) -> None:
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     tz = ZoneInfo("Asia/Shanghai")
     for hour in (9, 10, 11):
         store.upsert_item(
@@ -313,7 +313,7 @@ def test_store_time_range_limit_keeps_latest_events_in_chronological_order(
 
 
 def test_store_semantic_searches_respect_time_range(tmp_path: Path) -> None:
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     tz = ZoneInfo("Asia/Shanghai")
     store.upsert_item(
         "event",
@@ -355,7 +355,7 @@ def test_store_semantic_searches_respect_time_range(tmp_path: Path) -> None:
 
 
 def test_store_keyword_search_respects_required_scope(tmp_path: Path) -> None:
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     store.upsert_item(
         "event",
         "用户在当前会话讨论支付问题",
@@ -438,7 +438,7 @@ def test_store_vector_batch_reuses_time_filtered_embedding_rows(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     tz = ZoneInfo("Asia/Shanghai")
     store.upsert_item(
         "event",
@@ -500,7 +500,7 @@ def test_store_vector_batch_reuses_time_filtered_embedding_rows(
 def test_store_keyword_time_filter_prefilters_before_candidate_limit(
     tmp_path: Path,
 ) -> None:
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     tz = ZoneInfo("Asia/Shanghai")
     for index in range(1005):
         store.upsert_item(

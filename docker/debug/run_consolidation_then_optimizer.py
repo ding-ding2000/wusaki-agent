@@ -21,7 +21,7 @@ from bootstrap.memory import build_memory_admin_runtime
 from bootstrap.providers import build_providers
 from core.memory.markdown import ConsolidateRequest
 from core.net.http import SharedHttpResources
-from proactive_v2.memory_optimizer import MemoryOptimizer
+from proactive_v1.memory_optimizer import MemoryOptimizer
 from session.manager import Session
 
 # 正例：浏览器已部署，助手被告知可以直接用
