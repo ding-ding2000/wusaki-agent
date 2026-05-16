@@ -19,7 +19,7 @@ from bus.events import InboundMessage, OutboundMessage
 from bus.queue import MessageBus
 
 if TYPE_CHECKING:
-    from proactive_v2.loop import ProactiveLoop
+    from proactive_v1.loop import ProactiveLoop
 
 logger = logging.getLogger(__name__)
 

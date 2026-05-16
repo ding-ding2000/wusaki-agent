@@ -5,7 +5,7 @@ import pytest
 
 from agent.tools.forget_memory import ForgetMemoryTool
 from core.memory.engine import ForgetRequest, ForgetResult
-from memory2.store import MemoryStore2
+from memory.store import MemoryStore2
 
 
 class _MemoryWriter:
@@ -32,7 +32,7 @@ class _MemoryWriter:
 
 @pytest.mark.asyncio
 async def test_forget_memory_marks_existing_items_superseded(tmp_path: Path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     try:
         result = store.upsert_item(
             memory_type="event",
@@ -56,7 +56,7 @@ async def test_forget_memory_marks_existing_items_superseded(tmp_path: Path):
 
 @pytest.mark.asyncio
 async def test_forget_memory_ignores_duplicates_and_reports_missing(tmp_path: Path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     try:
         result = store.upsert_item(
             memory_type="event",

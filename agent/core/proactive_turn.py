@@ -36,16 +36,16 @@ from agent.tool_hooks import ToolExecutionRequest, ToolExecutor, ToolHook
 from agent.turns.orchestrator import TurnOrchestrator
 from agent.turns.result import TurnOutbound, TurnResult, TurnTrace
 from core.memory.markdown import MemoryProfileApi
-from proactive_v2.config import ProactiveConfig
-from proactive_v2.context import AgentTickContext
-from proactive_v2.contracts import (
+from proactive_v1.config import ProactiveConfig
+from proactive_v1.context import AgentTickContext
+from proactive_v1.contracts import (
     normalize_alert,
     normalize_content,
     normalize_context,
 )
 from agent.core.drift_turn import DriftTurnPipeline
-from proactive_v2.gateway import DataGateway, GatewayDeps, GatewayResult
-from proactive_v2.tools import TOOL_SCHEMAS, ToolDeps, dispatch
+from proactive_v1.gateway import DataGateway, GatewayDeps, GatewayResult
+from proactive_v1.tools import TOOL_SCHEMAS, ToolDeps, dispatch
 
 logger = logging.getLogger(__name__)
 
@@ -239,7 +239,7 @@ def _read_self_text(memory: MemoryProfileApi | None) -> str:
 
 def _log_content_candidates(gw: GatewayResult) -> None:
     if not gw.content_meta:
-        logger.info("[proactive_v2] content candidates: 0")
+        logger.info("[proactive_v1] content candidates: 0")
         return
     lines: list[str] = []
     for index, item in enumerate(gw.content_meta, 1):
@@ -250,7 +250,7 @@ def _log_content_candidates(gw: GatewayResult) -> None:
             line += f" | source={source}"
         lines.append(line)
     logger.info(
-        "[proactive_v2] content candidates: %d\n%s",
+        "[proactive_v1] content candidates: %d\n%s",
         len(gw.content_meta),
         "\n".join(lines),
     )
@@ -381,12 +381,12 @@ class ProactiveTurnPipeline:
 
         # 1.1 没有目标 chat_id → 跳过。
         if not str(self._cfg.default_chat_id or "").strip():
-            logger.debug("[proactive_v2] gate: no chat_id → blocked")
+            logger.debug("[proactive_v1] gate: no chat_id → blocked")
             return GateResult(blocked=True, reason="no_target", base_score=None)
 
         # 1.2 被动链路忙 → 不打扰。
         if self._passive_busy_fn and self._passive_busy_fn(self._session_key):
-            logger.debug("[proactive_v2] gate: passive_busy → blocked")
+            logger.debug("[proactive_v1] gate: passive_busy → blocked")
             return GateResult(blocked=True, reason="busy", base_score=None)
 
         # 1.3 发送冷却期内 → 跳过。
@@ -394,7 +394,7 @@ class ProactiveTurnPipeline:
             self._session_key,
             self._cfg.agent_tick_delivery_cooldown_hours,
         ) > 0:
-            logger.debug("[proactive_v2] gate: delivery_cooldown → blocked")
+            logger.debug("[proactive_v1] gate: delivery_cooldown → blocked")
             return GateResult(blocked=True, reason="cooldown", base_score=None)
 
         # 1.4 活跃度 gate（AnyAction）。
@@ -404,7 +404,7 @@ class ProactiveTurnPipeline:
                 last_user_at=self._last_user_at_fn(),
             )
             if not should_act:
-                logger.debug("[proactive_v2] gate: anyaction → blocked meta=%s", meta)
+                logger.debug("[proactive_v1] gate: anyaction → blocked meta=%s", meta)
                 return GateResult(blocked=True, reason="presence", base_score=None)
 
         # 1.5 context-fallback 概率 + 配额计算。
@@ -485,7 +485,7 @@ class ProactiveTurnPipeline:
                     and (ctx.now_utc - last_drift_at).total_seconds() < min_interval_hours * 3600
                 ):
                     logger.info(
-                        "[proactive_v2] fetch: drift blocked by interval last_drift_at=%s min_interval_hours=%d",
+                        "[proactive_v1] fetch: drift blocked by interval last_drift_at=%s min_interval_hours=%d",
                         last_drift_at.isoformat(),
                         min_interval_hours,
                     )
@@ -493,15 +493,15 @@ class ProactiveTurnPipeline:
                     ctx.skip_reason = "no_content"
                     self.last_ctx = ctx
                     return FeedResult(drift_entered=False, base_score=None)
-                logger.info("[proactive_v2] fetch: empty gateway, attempting drift")
+                logger.info("[proactive_v1] fetch: empty gateway, attempting drift")
                 entered_drift = await self._drift_pipeline.run(ctx, self._llm_fn)
                 if entered_drift:
                     self._state_store.mark_drift_run(self._session_key, ctx.now_utc)
-                    logger.info("[proactive_v2] fetch: drift entered, message_sent=%s", ctx.drift_message_sent)
+                    logger.info("[proactive_v1] fetch: drift entered, message_sent=%s", ctx.drift_message_sent)
                     self.last_ctx = ctx
                     return FeedResult(drift_entered=True, base_score=0.0)
-                logger.info("[proactive_v2] fetch: drift not entered")
-            logger.info("[proactive_v2] fetch: no data and fallback off → skip")
+                logger.info("[proactive_v1] fetch: drift not entered")
+            logger.info("[proactive_v1] fetch: no data and fallback off → skip")
             ctx.terminal_action = "skip"
             ctx.skip_reason = "no_content"
             self.last_ctx = ctx
@@ -565,7 +565,7 @@ class ProactiveTurnPipeline:
                     "全部分类完毕后再调用 message_push + finish_turn(decision=reply)，或 finish_turn(decision=skip, reason=...)。"
                 )
                 logger.info(
-                    "[proactive_v2] judge completeness: %d unclassified, resetting → %s",
+                    "[proactive_v1] judge completeness: %d unclassified, resetting → %s",
                     len(unclassified_ids),
                     sorted(unclassified_ids),
                 )
@@ -585,7 +585,7 @@ class ProactiveTurnPipeline:
                 "所有条目均已分类完毕。你必须现在调用 message_push 撰写推送，然后调用 finish_turn(decision=reply)；"
                 "或直接调用 finish_turn(decision=skip, reason=...)。不允许直接结束。"
             )
-            logger.info("[proactive_v2] judge reflection: interesting=%d, injecting prompt", len(ctx.interesting_item_ids))
+            logger.info("[proactive_v1] judge reflection: interesting=%d, injecting prompt", len(ctx.interesting_item_ids))
             messages.append({"role": "user", "content": reflection})
             for _ in range(3):
                 if ctx.terminal_action is not None or ctx.steps_taken >= self._cfg.agent_tick_max_steps:
@@ -606,7 +606,7 @@ class ProactiveTurnPipeline:
         # 4.1 LLM 判定为 skip → 直接构建 skip 结果。
         if ctx.terminal_action != "reply":
             logger.info(
-                "[proactive_v2] resolve: action=%s steps=%d discarded=%d interesting=%d skip_reason=%s note=%s",
+                "[proactive_v1] resolve: action=%s steps=%d discarded=%d interesting=%d skip_reason=%s note=%s",
                 ctx.terminal_action or "none",
                 ctx.steps_taken,
                 len(ctx.discarded_item_ids),
@@ -639,7 +639,7 @@ class ProactiveTurnPipeline:
         if self._state_store.is_delivery_duplicate(
             self._session_key, delivery_key, self._cfg.delivery_dedupe_hours
         ):
-            logger.info("[proactive_v2] resolve: delivery_dedupe hit")
+            logger.info("[proactive_v1] resolve: delivery_dedupe hit")
             return ResolveResult(
                 action="skip",
                 result=TurnResult(
@@ -678,7 +678,7 @@ class ProactiveTurnPipeline:
                 new_state_summary_tag="none",
             )
             if is_dup:
-                logger.info("[proactive_v2] resolve: message_dedupe hit: %s", reason)
+                logger.info("[proactive_v1] resolve: message_dedupe hit: %s", reason)
                 return ResolveResult(
                     action="skip",
                     result=TurnResult(
@@ -778,7 +778,7 @@ class ProactiveTurnPipeline:
         if self._any_action_gate is not None:
             self._any_action_gate.record_action(now_utc=ctx.now_utc)
         logger.info(
-            "[proactive_v2] drift entered, skipping normal post_loop message_sent=%s finished=%s",
+            "[proactive_v1] drift entered, skipping normal post_loop message_sent=%s finished=%s",
             ctx.drift_message_sent,
             ctx.drift_finished,
         )
@@ -804,7 +804,7 @@ class ProactiveTurnPipeline:
         tool_call = await llm_fn(messages, active_schemas, tool_choice)
         if tool_call is None:
             logger.warning(
-                "[proactive_v2] %s: llm_fn returned None at step %d, stopping",
+                "[proactive_v1] %s: llm_fn returned None at step %d, stopping",
                 loop_tag,
                 ctx.steps_taken,
             )
@@ -813,7 +813,7 @@ class ProactiveTurnPipeline:
         tool_args = tool_call.get("input", {})
         arg_summary = json.dumps(tool_args, ensure_ascii=False)[:200]
         logger.info(
-            "[proactive_v2] %s step %d: %s  args=%s",
+            "[proactive_v1] %s step %d: %s  args=%s",
             loop_tag,
             ctx.steps_taken,
             tool_name,
@@ -831,7 +831,7 @@ class ProactiveTurnPipeline:
             lambda name, args: dispatch(name, args, ctx, self._tool_deps),
         )
         if exec_result.status == "error":
-            logger.warning("[proactive_v2] %s: tool error: %s", loop_tag, exec_result.output)
+            logger.warning("[proactive_v1] %s: tool error: %s", loop_tag, exec_result.output)
             result = str(exec_result.output)
             call_id = tool_call.get("id") or f"call_{ctx.steps_taken}"
             self._record_tick_step(

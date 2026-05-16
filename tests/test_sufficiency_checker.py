@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from memory2.sufficiency_checker import SufficiencyChecker, SufficiencyResult
+from memory.sufficiency_checker import SufficiencyChecker, SufficiencyResult
 
 
 def _make_checker(llm_response: str) -> SufficiencyChecker:
@@ -39,14 +39,14 @@ def test_sufficiency_result_sufficient_has_no_refined_query():
 
 
 def test_should_check_when_no_items():
-    from memory2.sufficiency_checker import should_check_sufficiency
+    from memory.sufficiency_checker import should_check_sufficiency
 
     assert should_check_sufficiency([]) is True
 
 
 def test_should_not_check_when_items_present():
     """有结果时不触发——分数过滤已在注入筛选阶段完成。"""
-    from memory2.sufficiency_checker import should_check_sufficiency
+    from memory.sufficiency_checker import should_check_sufficiency
 
     items = [
         _item("procedure", 0.479, "西历2236读书进度"),
@@ -56,7 +56,7 @@ def test_should_not_check_when_items_present():
 
 
 def test_should_not_check_when_single_item_present():
-    from memory2.sufficiency_checker import should_check_sufficiency
+    from memory.sufficiency_checker import should_check_sufficiency
 
     items = [_item("procedure", 0.538, "天气查询强制走 weather 技能")]
     assert should_check_sufficiency(items) is False
@@ -64,7 +64,7 @@ def test_should_not_check_when_single_item_present():
 
 def test_should_not_check_when_forced_procedure_present():
     """有 tool_requirement 的 forced procedure 存在时，不触发 sufficiency check。"""
-    from memory2.sufficiency_checker import should_check_sufficiency
+    from memory.sufficiency_checker import should_check_sufficiency
 
     items = [
         {

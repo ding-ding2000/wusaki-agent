@@ -55,7 +55,7 @@ async def test_default_context_store_prepare_returns_bundle_with_legacy_metadata
             return_value=RetrievalResult(
                 block="remembered",
                 trace=RetrievalTrace(raw={"route": "RETRIEVE"}),
-                metadata={"source": "memory2"},
+                metadata={"source": "memory"},
             )
         )
     )
@@ -83,7 +83,7 @@ async def test_default_context_store_prepare_returns_bundle_with_legacy_metadata
     assert bundle.skill_mentions == ["refactor", "known"]
     assert bundle.retrieved_memory_block == "remembered"
     assert bundle.retrieval_trace_raw == {"route": "RETRIEVE"}
-    assert bundle.retrieval_metadata == {"source": "memory2"}
+    assert bundle.retrieval_metadata == {"source": "memory"}
     assert bundle.history_messages[0].tool_chain[0].calls[0].name == "read_file"
     assert bundle.metadata == {}
     request = retrieval.retrieve.await_args.args[0]

@@ -10,8 +10,8 @@ from fastapi.testclient import TestClient as _RawTestClient
 
 from bootstrap.dashboard_api import create_dashboard_app as _create_dashboard_app
 from plugins.default_memory.engine import DefaultMemoryEngine
-from memory2.store import MemoryStore2
-from proactive_v2.state import ProactiveStateStore
+from memory.store import MemoryStore2
+from proactive_v1.state import ProactiveStateStore
 from session.store import SessionStore
 
 
@@ -39,7 +39,7 @@ TestClient = _TrackedTestClient
 
 class _DashboardMemoryAdmin:
     def __init__(self, workspace) -> None:
-        self._store = MemoryStore2(workspace / "memory" / "memory2.db")
+        self._store = MemoryStore2(workspace / "memory" / "memory.db")
 
     def describe(self):
         return DefaultMemoryEngine.DESCRIPTOR
@@ -119,7 +119,7 @@ class _ManualMemoryOptimizer:
 
     async def optimize(self) -> None:
         if self.raise_busy:
-            from proactive_v2.memory_optimizer import MemoryOptimizerBusy
+            from proactive_v1.memory_optimizer import MemoryOptimizerBusy
 
             raise MemoryOptimizerBusy("busy")
         self._running = True
@@ -173,7 +173,7 @@ def _seed_workspace(tmp_path) -> None:
     )
     store.close()
 
-    memory_store = MemoryStore2(tmp_path / "memory" / "memory2.db", vec_dim=2)
+    memory_store = MemoryStore2(tmp_path / "memory" / "memory.db", vec_dim=2)
     memory_store.upsert_item(
         memory_type="preference",
         summary="喜欢奶茶，少糖去冰",
@@ -583,7 +583,7 @@ def test_list_memory_items_with_filters(tmp_path) -> None:
 
 def test_list_memory_items_sorts_by_created_at_desc(tmp_path) -> None:
     _seed_workspace(tmp_path)
-    conn = sqlite3.connect(tmp_path / "memory" / "memory2.db")
+    conn = sqlite3.connect(tmp_path / "memory" / "memory.db")
     try:
         conn.execute(
             "UPDATE memory_items SET created_at=? WHERE source_ref=?",
@@ -616,7 +616,7 @@ def test_list_memory_items_sorts_by_created_at_desc(tmp_path) -> None:
 
 def test_list_memory_items_default_sort_is_created_at_desc(tmp_path) -> None:
     _seed_workspace(tmp_path)
-    conn = sqlite3.connect(tmp_path / "memory" / "memory2.db")
+    conn = sqlite3.connect(tmp_path / "memory" / "memory.db")
     try:
         conn.execute(
             "UPDATE memory_items SET created_at=?, updated_at=? WHERE source_ref=?",

@@ -23,9 +23,9 @@ from agent.provider import (
 from agent.tool_runtime import append_assistant_tool_calls
 from infra.channels.cli import CLIClient, _print_banner
 from infra.channels.group_filter import DefaultGroupFilter, strip_at_segments
-from memory2.models import MemoryItem
-from proactive_v2.anyaction import AnyActionGate, QuotaStore
-from proactive_v2.memory_sampler import sample_memory_chunks, split_memory_chunks
+from memory.models import MemoryItem
+from proactive_v1.anyaction import AnyActionGate, QuotaStore
+from proactive_v1.memory_sampler import sample_memory_chunks, split_memory_chunks
 from bootstrap.app import AppRuntime
 from bootstrap.providers import build_providers, build_vl_provider
 from bus.event_bus import EventBus

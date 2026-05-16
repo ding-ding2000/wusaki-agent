@@ -10,8 +10,8 @@
     "bus",
     "core",
     "infra",
-    "memory2",
-    "proactive_v2",
+    "memory",
+    "proactive_v1",
     "prompts",
     "session"
   ],

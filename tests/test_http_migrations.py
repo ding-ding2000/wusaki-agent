@@ -15,7 +15,7 @@ from core.net.http import (
     configure_default_shared_http_resources,
     get_default_shared_http_resources,
 )
-from memory2.embedder import Embedder
+from memory.embedder import Embedder
 
 
 def _build_requester(handler) -> HttpRequester:

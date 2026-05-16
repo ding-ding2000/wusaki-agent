@@ -82,7 +82,7 @@ class MemoryRollupReader:
         }
 
     def generate(self, limit: int = _MAX_SOURCE_ITEMS) -> list[dict[str, Any]]:
-        """从 memory2 读取 source items，生成候选列表并写入缓存。"""
+        """从 memory 读取 source items，生成候选列表并写入缓存。"""
         # 1. 加载未被处理的 source items。
         source_items = self._load_source_items(limit=max(1, min(limit, 400)))
         # 2. 读当前 MEMORY.md 用于 overlap 检测。
@@ -242,7 +242,7 @@ class MemoryRollupReader:
         *,
         action: Literal["committed", "ignored"],
     ) -> None:
-        """在 memory2 的 extra_json._rollup 中标记处理状态，防止重复生成。"""
+        """在 memory 的 extra_json._rollup 中标记处理状态，防止重复生成。"""
         source_ids = _candidate_source_ids(candidate)
         if not source_ids:
             return
@@ -370,7 +370,7 @@ def _build_candidate(group: list[dict[str, Any]], memory_text: str) -> dict[str,
 
 
 def _candidate_tag(memory_type: str) -> CandidateTag:
-    """确定候选 tag：只信任 memory2 原始类型。"""
+    """确定候选 tag：只信任 memory 原始类型。"""
     return "identity" if memory_type == "profile" else "preference"
 
 

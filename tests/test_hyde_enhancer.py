@@ -16,8 +16,8 @@ import pytest
 
 from agent.provider import LLMResponse
 from agent.tools.base import Tool
-from memory2.hyde_enhancer import HyDEEnhancer, _union_dedup
-from memory2.injection_planner import retrieve_history_items
+from memory.hyde_enhancer import HyDEEnhancer, _union_dedup
+from memory.injection_planner import retrieve_history_items
 
 # ── 测试工具 ──────────────────────────────────────────────────────────────────
 

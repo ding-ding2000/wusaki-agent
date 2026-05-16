@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from memory2.profile_extractor import ProfileFact, ProfileFactExtractor
+from memory.profile_extractor import ProfileFact, ProfileFactExtractor
 
 
 def _make_extractor(llm_response: str) -> ProfileFactExtractor:

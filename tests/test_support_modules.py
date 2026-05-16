@@ -24,8 +24,8 @@ from bus.queue import MessageBus
 from core.common import timekit
 from plugins.default_memory.engine import DefaultMemoryEngine
 from infra.persistence.json_store import atomic_save_json, load_json, save_json
-from memory2.memorizer import Memorizer
-from memory2.store import MemoryStore2
+from memory.memorizer import Memorizer
+from memory.store import MemoryStore2
 
 
 def _make_default_engine(

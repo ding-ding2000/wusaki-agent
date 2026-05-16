@@ -2,8 +2,8 @@ from typing import Any, cast
 import asyncio
 from datetime import datetime, timedelta, timezone
 
-from memory2.memorizer import Memorizer
-from memory2.store import MemoryStore2
+from memory.memorizer import Memorizer
+from memory.store import MemoryStore2
 
 
 class _FakeEmbedder:
@@ -15,7 +15,7 @@ class _FakeEmbedder:
 
 
 def test_near_duplicate_event_not_saved_again(tmp_path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     embedder = _FakeEmbedder(
         {
             "用户把仓库脱敏后公开发布": [1.0, 0.0],
@@ -47,7 +47,7 @@ def test_near_duplicate_event_not_saved_again(tmp_path):
 
 
 def test_distinct_event_saves_normally(tmp_path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     embedder = _FakeEmbedder(
         {
             "用户把仓库脱敏后公开发布": [1.0, 0.0],
@@ -79,7 +79,7 @@ def test_distinct_event_saves_normally(tmp_path):
 
 
 def test_reinforcement_incremented_on_dedup(tmp_path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     embedder = _FakeEmbedder(
         {
             "用户把仓库脱敏后公开发布": [1.0, 0.0],
@@ -111,7 +111,7 @@ def test_reinforcement_incremented_on_dedup(tmp_path):
 
 
 def test_emotional_weight_merged_on_event_dedup(tmp_path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     embedder = _FakeEmbedder(
         {
             "用户把仓库脱敏后公开发布": [1.0, 0.0],
@@ -145,7 +145,7 @@ def test_emotional_weight_merged_on_event_dedup(tmp_path):
 
 
 def test_dedup_window_is_7_days(tmp_path):
-    store = MemoryStore2(tmp_path / "memory2.db")
+    store = MemoryStore2(tmp_path / "memory.db")
     embedder = _FakeEmbedder(
         {
             "用户把仓库脱敏后公开发布": [1.0, 0.0],

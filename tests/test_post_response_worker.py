@@ -3,10 +3,10 @@ from typing import Any, cast
 from unittest.mock import AsyncMock
 
 from core.memory.events import TurnIngested
-from memory2.memorizer import Memorizer
-from memory2.post_response_worker import PostResponseMemoryWorker
-from memory2.rule_schema import build_procedure_rule_schema
-from memory2.store import MemoryStore2
+from memory.memorizer import Memorizer
+from memory.post_response_worker import PostResponseMemoryWorker
+from memory.rule_schema import build_procedure_rule_schema
+from memory.store import MemoryStore2
 
 
 class _DummyProvider:

@@ -193,7 +193,7 @@ window.WusakiDashboard.registerPlugin({
           </div>
           <div class="detail-block">
             <div class="detail-label">流程</div>
-            <pre class="rollup-ascii">memory2.db
+            <pre class="rollup-ascii">memory.db
   └─ profile / preference
       └─ 真实 summary 候选
           └─ 前端人工确认

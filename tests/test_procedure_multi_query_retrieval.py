@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from memory2.injection_planner import retrieve_procedure_items
+from memory.injection_planner import retrieve_procedure_items
 
 
 def _make_memory_port(query_to_items: dict[str, list[dict]]):

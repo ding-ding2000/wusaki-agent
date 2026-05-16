@@ -1,4 +1,4 @@
-from memory2.query_builder import build_procedure_queries
+from memory.query_builder import build_procedure_queries
 
 
 def test_original_message_always_in_queries():

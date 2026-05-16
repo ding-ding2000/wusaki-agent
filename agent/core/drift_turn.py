@@ -32,9 +32,9 @@ from agent.prompting import (
 )
 from agent.tool_hooks import ToolExecutionRequest, ToolExecutor
 from agent.tool_hooks.base import ToolHook
-from proactive_v2.context import AgentTickContext
-from proactive_v2.drift_state import DriftStateStore, SkillMeta
-from proactive_v2.drift_tools import (
+from proactive_v1.context import AgentTickContext
+from proactive_v1.drift_state import DriftStateStore, SkillMeta
+from proactive_v1.drift_tools import (
     DriftToolDeps,
     build_drift_tool_registry,
 )

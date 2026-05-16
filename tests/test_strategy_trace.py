@@ -3,7 +3,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from core.common.strategy_trace import build_strategy_trace_envelope
-from proactive_v2.loop import ProactiveLoop
+from proactive_v1.loop import ProactiveLoop
 
 
 def test_build_strategy_trace_envelope_uses_subject_scope():

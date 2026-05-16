@@ -2,7 +2,7 @@ import asyncio
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock
 
-from memory2.post_response_worker import PostResponseMemoryWorker
+from memory.post_response_worker import PostResponseMemoryWorker
 
 
 class _DummyProvider:

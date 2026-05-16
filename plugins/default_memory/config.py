@@ -92,7 +92,7 @@ def resolve_memory_db_path(
     default_config: DefaultMemoryConfig,
 ) -> Path:
     if not default_config.db_path:
-        return workspace / "memory" / "memory2.db"
+        return workspace / "memory" / "memory.db"
     path = Path(default_config.db_path)
     return path if path.is_absolute() else workspace / path
 

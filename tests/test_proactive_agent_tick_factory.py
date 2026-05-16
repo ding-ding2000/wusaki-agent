@@ -4,10 +4,10 @@ from typing import Any, cast
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from proactive_v2.agent_tick_factory import AgentTickDeps, AgentTickFactory
-from proactive_v2.config import ProactiveConfig
-from proactive_v2.context import AgentTickContext
-from proactive_v2.mcp_sources import McpClientPool
+from proactive_v1.agent_tick_factory import AgentTickDeps, AgentTickFactory
+from proactive_v1.config import ProactiveConfig
+from proactive_v1.context import AgentTickContext
+from proactive_v1.mcp_sources import McpClientPool
 from bootstrap.proactive import build_proactive_runtime
 
 
