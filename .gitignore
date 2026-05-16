@@ -22,7 +22,6 @@ logs/
 workspace/
 data/
 /data
-/memory/
 **/.kv.json
 plugins/**/.data/
 
